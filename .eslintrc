@@ -1,0 +1,44 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": "airbnb",
+    "overrides": [
+        {
+            "files": [
+                "public/*"
+            ],
+            "rules": {
+                "require-jsdoc": "off"
+            }
+        }
+    ],
+    "rules": {
+        "indent": [
+            2, 
+            4
+        ],
+        "react/jsx-indent": [
+            2,
+            4
+        ],
+        "react/jsx-indent-props": [
+            2,
+            4
+        ],
+        "no-underscore-dangle": "off",
+        "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
+        "no-unused-vars": ["error", { "vars": "all", "args": "none", "ignoreRestSiblings": false }],
+        "class-methods-use-this": "off",
+        "no-console": "off",
+        "react/jsx-filename-extension": "off",
+        "react/destructuring-assignment": "off",
+        "react/state-in-constructor": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/button-has-type": "off",
+    }
+}
