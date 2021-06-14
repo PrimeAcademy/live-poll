@@ -2,4 +2,13 @@ footer {
   margin-top: 80px;
   padding: 20px;
   text-align: center;
+
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+
+  background: var(--almost-black);
+  color: white;
+  font-weight: bold;
+  min-height: 120px;
 }

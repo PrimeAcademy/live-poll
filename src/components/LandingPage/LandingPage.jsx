@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import './LandingPage.css';
 import Logo from '../Logo/Logo';
 
@@ -39,6 +40,35 @@ function LandingPage() {
                         The best way to grow as a professional is with direct, honest, and timely
                         feedback. LivePoll gives you instant feedback from your students, coworkers,
                         or audience members.
+                    </p>
+
+                    <p style={{
+                        textAlign: 'right',
+                        paddingTop: 40,
+                    }}
+                    >
+                        <Link to="/registration" style={{ textDecoration: 'none' }}>
+                            <Button
+                                variant="contained"
+                                style={{
+                                    background: 'var(--russian-green)',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: 22,
+                                    textTransform: 'none',
+                                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
+                                }}
+                            >
+                                Start LivePolling
+                            </Button>
+                        </Link>
+                        <div style={{ paddingTop: 12 }}>
+                            or
+                            {' '}
+                            <Link to="/login">login</Link>
+                            {' '}
+                            to an existing account
+                        </div>
                     </p>
                 </Grid>
             </Grid>
