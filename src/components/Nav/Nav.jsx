@@ -1,47 +1,71 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import './Nav.css';
-import {useSelector} from 'react-redux';
+import Logo from '../Logo/Logo';
 
 function Nav() {
-  const user = useSelector((store) => store.user);
+    const user = useSelector((store) => store.user);
 
-  let loginLinkData = {
-    path: '/login',
-    text: 'Login / Register',
-  };
+    const loginLinkData = {
+        path: '/login',
+        text: 'Login / Register',
+    };
 
-  if (user.id != null) {
-    loginLinkData.path = '/user';
-    loginLinkData.text = 'Home';
-  }
+    if (user.id != null) {
+        loginLinkData.path = '/user';
+        loginLinkData.text = 'Home';
+    }
 
-  return (
-    <div className="nav">
-      <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
-      </Link>
-      <div>
-        <Link className="navLink" to={loginLinkData.path}>
-          {loginLinkData.text}
-        </Link>
-
-        {user.id && (
-          <>
-            <Link className="navLink" to="/info">
-              Info Page
+    return (
+        <div className="nav">
+            <Link to="/home" style={{ opacity: 0.9 }}>
+                <Logo
+                    showText={false}
+                    style={{
+                        display: 'inline-block',
+                        width: 95,
+                        paddingLeft: 30,
+                    }}
+                />
+                <h2
+                    className="nav-title"
+                    style={{
+                        display: 'inline-block',
+                        fontFamily: 'Marker Felt',
+                        verticalAlign: 19,
+                        color: '#4d4d4d',
+                        textShadow: '1px 1px 4px rgba(255, 255, 255, 0.3)',
+                        fontSize: 30,
+                        padding: 0,
+                        transform: 'rotate(-4deg)',
+                        marginLeft: -13,
+                    }}
+                >
+                    LivePoll
+                </h2>
             </Link>
-            <LogOutButton className="navLink" />
-          </>
-        )}
+            <div>
+                <Link className="navLink" to={loginLinkData.path}>
+                    {loginLinkData.text}
+                </Link>
 
-        <Link className="navLink" to="/about">
-          About
-        </Link>
-      </div>
-    </div>
-  );
+                {user.id && (
+                    <>
+                        <Link className="navLink" to="/info">
+                            Info Page
+                        </Link>
+                        <LogOutButton className="navLink" />
+                    </>
+                )}
+
+                <Link className="navLink" to="/about">
+                    About
+                </Link>
+            </div>
+        </div>
+    );
 }
 
 export default Nav;

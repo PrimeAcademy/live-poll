@@ -11,22 +11,20 @@ import { connect } from 'react-redux';
 
 class TemplateClass extends Component {
   state = {
-    heading: 'Class Component',
+      heading: 'Class Component',
   };
 
   render() {
-    return (
-      <div>
-        <h2>{this.state.heading}</h2>
-      </div>
-    );
+      return (
+          <div>
+              <h2>{this.state.heading}</h2>
+          </div>
+      );
   }
 }
 
-const mapStoreToProps = (reduxStore) => {
-  return {
+const mapStoreToProps = (reduxStore) => ({
     store: reduxStore,
-  };
-};
+});
 
 export default connect(mapStoreToProps)(TemplateClass);

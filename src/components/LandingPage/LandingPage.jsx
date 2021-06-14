@@ -1,69 +1,80 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { Button, Grid } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import './LandingPage.css';
+import Logo from '../Logo/Logo';
 
-// CUSTOM COMPONENTS
-import RegisterForm from '../RegisterForm/RegisterForm';
+// https://coolors.co/ffcab1-69a2b0-659157-a1c084-e05263
 
 function LandingPage() {
-  const [heading, setHeading] = useState('Welcome');
-  const history = useHistory();
+    return (
+        <div className="container">
 
-  const onLogin = (event) => {
-    history.push('/login');
-  };
+            <Grid container style={{ paddingTop: 60 }} spacing={8}>
+                {/* Logo */}
+                <Grid
+                    item
+                    xs={5}
+                    style={{
+                        position: 'relative',
+                        left: -30,
+                        paddingTop: 30,
+                    }}
+                >
+                    <Logo />
+                </Grid>
 
-  return (
-    <div className="container">
-      <h2>{heading}</h2>
+                <Grid item xs={6}>
+                    <h1>
+                        How
+                        <em> are</em>
+                        {' '}
+                        you doing?
+                    </h1>
 
-      <div className="grid">
-        <div className="grid-col grid-col_8">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            id felis metus. Vestibulum et pulvinar tortor. Morbi pharetra lacus
-            ut ex molestie blandit. Etiam et turpis sit amet risus mollis
-            interdum. Suspendisse et justo vitae metus bibendum fringilla sed
-            sed justo. Aliquam sollicitudin dapibus lectus, vitae consequat odio
-            elementum eget. Praesent efficitur eros vitae nunc interdum, eu
-            interdum justo facilisis. Sed pulvinar nulla ac dignissim efficitur.
-            Quisque eget eros metus. Vestibulum bibendum fringilla nibh a
-            luctus. Duis a sapien metus.
-          </p>
+                    <p>
+                        And how will you know, if no one tells you?
+                    </p>
 
-          <p>
-            Praesent consectetur orci dui, id elementum eros facilisis id. Sed
-            id dolor in augue porttitor faucibus eget sit amet ante. Nunc
-            consectetur placerat pharetra. Aenean gravida ex ut erat commodo, ut
-            finibus metus facilisis. Nullam eget lectus non urna rhoncus
-            accumsan quis id massa. Curabitur sit amet dolor nisl. Proin
-            euismod, augue at condimentum rhoncus, massa lorem semper lacus, sed
-            lobortis augue mi vel felis. Duis ultrices sapien at est convallis
-            congue.
-          </p>
+                    <p>
+                        The best way to grow as a professional is with direct, honest, and timely
+                        feedback. LivePoll gives you instant feedback from your students, coworkers,
+                        or audience members.
+                    </p>
 
-          <p>
-            Fusce porta diam ac tortor elementum, ut imperdiet metus volutpat.
-            Suspendisse posuere dapibus maximus. Aliquam vitae felis libero. In
-            vehicula sapien at semper ultrices. Vivamus sed feugiat libero. Sed
-            sagittis neque id diam euismod, ut egestas felis ultricies. Nullam
-            non fermentum mauris. Sed in enim ac turpis faucibus pretium in sit
-            amet nisi.
-          </p>
+                    <p style={{
+                        textAlign: 'right',
+                        paddingTop: 40,
+                    }}
+                    >
+                        <Link to="/registration" style={{ textDecoration: 'none' }}>
+                            <Button
+                                variant="contained"
+                                style={{
+                                    background: 'var(--russian-green)',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: 22,
+                                    textTransform: 'none',
+                                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
+                                }}
+                            >
+                                Start LivePolling
+                            </Button>
+                        </Link>
+                        <div style={{ paddingTop: 12 }}>
+                            or
+                            {' '}
+                            <Link to="/login">login</Link>
+                            {' '}
+                            to an existing account
+                        </div>
+                    </p>
+                </Grid>
+            </Grid>
+
         </div>
-        <div className="grid-col grid-col_4">
-          <RegisterForm />
-
-          <center>
-            <h4>Already a Member?</h4>
-            <button className="btn btn_sizeSm" onClick={onLogin}>
-              Login
-            </button>
-          </center>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default LandingPage;
