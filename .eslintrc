@@ -39,6 +39,7 @@
         "react/state-in-constructor": "off",
         "react/react-in-jsx-scope": "off",
         "react/jsx-props-no-spreading": "off",
-        "react/button-has-type": "off"
+        "react/button-has-type": "off",
+        "react/prop-types": "off"
     }
 }

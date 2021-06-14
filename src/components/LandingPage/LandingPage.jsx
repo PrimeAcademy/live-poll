@@ -1,58 +1,26 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import './LandingPage.css';
-import touchScreen from '../../images/swipe.jpg';
+import Logo from '../Logo/Logo';
 
-// CUSTOM COMPONENTS
-import RegisterForm from '../RegisterForm/RegisterForm';
-
-const useStyles = makeStyles({
-    logo: {
-        display: 'inline-block',
-        position: 'relative',
-        paddingTop: 30,
-        marginLeft: -20,
-
-        '& img': {
-            width: '80%',
-            transform: 'rotate(-10deg)',
-        },
-
-        '& div': {
-            fontFamily: 'Marker Felt',
-            fontSize: 70,
-            color: '#3c3c3c',
-            position: 'absolute',
-            right: -3,
-            top: 35,
-            textShadow: '4px 3px 2px #c4c2b9',
-            transform: 'rotate(-5deg)',
-        },
-    },
-});
+// https://coolors.co/ffcab1-69a2b0-659157-a1c084-e05263
 
 function LandingPage() {
-    const history = useHistory();
-    const classes = useStyles();
-
-    const onLogin = (event) => {
-        history.push('/login');
-    };
-
     return (
         <div className="container">
 
-            <Grid container style={{ paddingTop: 40 }} spacing={8}>
+            <Grid container style={{ paddingTop: 60 }} spacing={8}>
                 {/* Logo */}
-                <Grid item xs={5}>
-                    <div className={classes.logo}>
-                        <img
-                            alt="LivePoll logo"
-                            src={touchScreen}
-                        />
-                        <div>LivePoll</div>
-                    </div>
+                <Grid
+                    item
+                    xs={5}
+                    style={{
+                        position: 'relative',
+                        left: -30,
+                        paddingTop: 30,
+                    }}
+                >
+                    <Logo />
                 </Grid>
 
                 <Grid item xs={6}>

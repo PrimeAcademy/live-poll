@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import './Nav.css';
+import Logo from '../Logo/Logo';
 
 function Nav() {
     const user = useSelector((store) => store.user);
@@ -19,8 +20,31 @@ function Nav() {
 
     return (
         <div className="nav">
-            <Link to="/home">
-                <h2 className="nav-title">LivePoll</h2>
+            <Link to="/home" style={{ opacity: 0.9 }}>
+                <Logo
+                    showText={false}
+                    style={{
+                        display: 'inline-block',
+                        width: 95,
+                        paddingLeft: 30,
+                    }}
+                />
+                <h2
+                    className="nav-title"
+                    style={{
+                        display: 'inline-block',
+                        fontFamily: 'Marker Felt',
+                        verticalAlign: 19,
+                        color: '#4d4d4d',
+                        textShadow: '1px 1px 4px rgba(255, 255, 255, 0.3)',
+                        fontSize: 30,
+                        padding: 0,
+                        transform: 'rotate(-4deg)',
+                        marginLeft: -13,
+                    }}
+                >
+                    LivePoll
+                </h2>
             </Link>
             <div>
                 <Link className="navLink" to={loginLinkData.path}>
