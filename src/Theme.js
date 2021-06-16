@@ -1,9 +1,12 @@
 import { createMuiTheme } from '@material-ui/core';
 
 const theme = createMuiTheme({
-    typography: {
-    },
     overrides: {
+        MuiTableCell: {
+            root: {
+                fontSize: 16,
+            },
+        },
         MuiCssBaseline: {
             '@global': {
                 'p, h1, h2, h3, h4, h5': {
@@ -13,6 +16,9 @@ const theme = createMuiTheme({
                 },
                 h1: {
                     fontSize: 40,
+                },
+                h2: {
+                    fontSize: 30,
                 },
                 p: {
                     fontSize: 18,

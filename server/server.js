@@ -1,4 +1,5 @@
 const express = require('express');
+require('express-async-errors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -9,6 +10,7 @@ const passport = require('./strategies/user.strategy');
 
 // Route includes
 const userRouter = require('./routes/user.router');
+const sessionsRouter = require('./routes/sessions.router');
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -23,9 +25,17 @@ app.use(passport.session());
 
 /* Routes */
 app.use('/api/user', userRouter);
+app.use('/api/sessions', sessionsRouter);
 
 // Serve static files
 app.use(express.static('build'));
+
+// Error handler
+app.use((err, req, res, next) => {
+    res.status(500).send({
+        message: `Internal Server Error: ${err.message}`,
+    });
+});
 
 // App Set //
 const PORT = process.env.PORT || 5000;
