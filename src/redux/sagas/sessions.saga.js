@@ -17,8 +17,27 @@ function* fetchSessionList() {
     }
 }
 
+function* createSession(action) {
+    try {
+        const { data } = yield axios.post('/api/sessions');
+
+        console.log({ action });
+
+        if (action.payload.onSuccess) {
+            action.payload.onSuccess(data);
+        }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: err,
+        });
+    }
+}
+
 function* sessionSaga() {
     yield takeLatest('FETCH_SESSION_LIST', fetchSessionList);
+    yield takeLatest('CREATE_SESSION', createSession);
 }
 
 export default sessionSaga;

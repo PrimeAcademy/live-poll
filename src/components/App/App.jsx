@@ -25,6 +25,7 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 import './colors.css';
 import './App.css';
 import SessionList from '../SessionList/SessionList';
+import CreateSession from '../CreateSession/CreateSession';
 
 function App() {
     const dispatch = useDispatch();
@@ -117,6 +118,13 @@ function App() {
                         exact
                     >
                         <SessionList />
+                    </ProtectedRoute>
+
+                    <ProtectedRoute
+                        path="/sessions/new"
+                        exact
+                    >
+                        <CreateSession />
                     </ProtectedRoute>
 
                     {/* If none of the other routes matched, we will show a 404. */}

@@ -12,25 +12,25 @@ CREATE TABLE "user" (
 
 CREATE TABLE "session" (
     "id" SERIAL PRIMARY KEY,
-    "presenterId" INT REFERENCES "user",
-    "name" VARCHAR(255),
-    "joinCode" VARCHAR(12),
-    "createdAt" TIMESTAMP,
+    "presenterId" INT REFERENCES "user" NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "joinCode" VARCHAR(12) NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
     "endedAt" TIMESTAMP
 );
 
 CREATE TABLE "participant" (
     "id" SERIAL PRIMARY KEY,
-    "sessionId" INT REFERENCES "session",
-    "displayName" VARCHAR(255),
-    "joinedAt" TIMESTAMP,
+    "sessionId" INT REFERENCES "session" NOT NULL,
+    "displayName" VARCHAR(255) NOT NULL,
+    "joinedAt" TIMESTAMP NOT NULL,
     "exitedAt" TIMESTAMP
 );
 
 -- Feedback score
 CREATE TABLE "score" (
     "id" SERIAL PRIMARY KEY,
-    "participantId" INT REFERENCES "participant",
-    "value" INT,
-    "createdAt" TIMESTAMP
+    "participantId" INT REFERENCES "participant" NOT NULL,
+    "value" INT NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL
 )

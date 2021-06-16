@@ -36,7 +36,7 @@ const globalError = (state = null, action) => {
     switch (action.type) {
     case 'SET_GLOBAL_ERROR':
         const err = action.payload;
-        const msg = err.response && err.response.data
+        const msg = (err.response && err.response.data && err.response.data.message)
             ? err.response.data.message
             : err.message;
 
