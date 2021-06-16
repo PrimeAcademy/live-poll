@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
 import Logo from '../Logo/Logo';
+import ButtonLink from '../Util/ButtonLink';
 
 // https://coolors.co/ffcab1-69a2b0-659157-a1c084-e05263
 
@@ -47,21 +48,14 @@ function LandingPage() {
                         paddingTop: 40,
                     }}
                     >
-                        <Link to="/registration" style={{ textDecoration: 'none' }}>
-                            <Button
-                                variant="contained"
-                                style={{
-                                    background: 'var(--russian-green)',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    fontSize: 22,
-                                    textTransform: 'none',
-                                    textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
-                                }}
-                            >
-                                Start LivePolling
-                            </Button>
-                        </Link>
+                        <ButtonLink
+                            to="/registration"
+                            style={{
+                                fontSize: 22,
+                            }}
+                        >
+                            Start LivePolling
+                        </ButtonLink>
                         <div style={{ paddingTop: 12 }}>
                             or
                             {' '}

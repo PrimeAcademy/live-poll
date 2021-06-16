@@ -32,10 +32,27 @@ const registrationMessage = (state = '', action) => {
     }
 };
 
+const globalError = (state = null, action) => {
+    switch (action.type) {
+    case 'SET_GLOBAL_ERROR':
+        const err = action.payload;
+        const msg = err.response && err.response.data
+            ? err.response.data.message
+            : err.message;
+
+        console.error(msg);
+        return msg;
+    case 'CLEAR_GLOBAL_ERROR':
+        return null;
+    }
+    return state;
+};
+
 // make one object that has keys loginMessage, registrationMessage
 // these will be on the redux state at:
 // state.errors.loginMessage and state.errors.registrationMessage
 export default combineReducers({
     loginMessage,
     registrationMessage,
+    globalError,
 });

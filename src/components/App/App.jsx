@@ -6,8 +6,10 @@ import {
     Switch,
 } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import Nav from '../Nav/Nav';
 import Footer from '../Footer/Footer';
 
@@ -22,9 +24,12 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 
 import './colors.css';
 import './App.css';
+import SessionList from '../SessionList/SessionList';
 
 function App() {
     const dispatch = useDispatch();
+
+    const globalError = useSelector((store) => store.errors.globalError);
 
     useEffect(() => {
         dispatch({ type: 'FETCH_USER' });
@@ -76,35 +81,42 @@ function App() {
             be taken to the component and path supplied. */}
                     <ProtectedRoute
                         // with authRedirect:
-                        // - if logged in, redirects to "/user"
+                        // - if logged in, redirects to "/sessions"
                         // - else shows LoginPage at /login
                         exact
                         path="/login"
-                        authRedirect="/user"
+                        authRedirect="/sessions"
                     >
                         <LoginPage />
                     </ProtectedRoute>
 
                     <ProtectedRoute
                         // with authRedirect:
-                        // - if logged in, redirects to "/user"
+                        // - if logged in, redirects to "/sessions"
                         // - else shows RegisterPage at "/registration"
                         exact
                         path="/registration"
-                        authRedirect="/user"
+                        authRedirect="/sessions"
                     >
                         <RegisterPage />
                     </ProtectedRoute>
 
                     <ProtectedRoute
                         // with authRedirect:
-                        // - if logged in, redirects to "/user"
+                        // - if logged in, redirects to "/sessions"
                         // - else shows LandingPage at "/home"
                         exact
                         path="/home"
-                        authRedirect="/user"
+                        authRedirect="/sessions"
                     >
                         <LandingPage />
+                    </ProtectedRoute>
+
+                    <ProtectedRoute
+                        path="/sessions"
+                        exact
+                    >
+                        <SessionList />
                     </ProtectedRoute>
 
                     {/* If none of the other routes matched, we will show a 404. */}
@@ -114,6 +126,19 @@ function App() {
 
                 </Switch>
                 <Footer />
+                <Snackbar
+                    open={globalError}
+                    message="test"
+                    onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                >
+                    <Alert
+                        onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
+                        severity="error"
+                    >
+                        {globalError}
+                    </Alert>
+                </Snackbar>
             </div>
         </Router>
     );

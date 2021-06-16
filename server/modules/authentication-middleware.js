@@ -6,7 +6,9 @@ const rejectUnauthenticated = (req, res, next) => {
         next();
     } else {
     // failure best handled on the server. do redirect here.
-        res.sendStatus(403);
+        res.status(403).send({
+            message: 'User is not authorized to access this data.',
+        });
     }
 };
 
