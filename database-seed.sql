@@ -1,5 +1,5 @@
 -- https://api.mockaroo.com/api/7ec859b0?count=20&key=7a16e600
-insert into "user" (username, "displayName", "password") values ('rruperti0', 'Rice Ruperti', 'VnoVSdWjMc');
+insert into "user" (username, "displayName", "password") values ('eschwartz', 'Edan Schwartz', '$2a$10$zSnYOaQJxV73ttH/F1TlDOOllLpKmKzcDlpCWcwrTMMqfGv04iBz.');
 insert into "user" (username, "displayName", "password") values ('lcamies1', 'Leopold Camies', 'zsZVfDIugi8');
 insert into "user" (username, "displayName", "password") values ('ehainning2', 'Elvira Hainning', 'Cb4vJ7WG0h');
 insert into "user" (username, "displayName", "password") values ('wbownes3', 'Warren Bownes', 'zS5SLqST7');

@@ -112,12 +112,12 @@ function App() {
                         <LandingPage />
                     </ProtectedRoute>
 
-                    <Route
+                    <ProtectedRoute
                         path="/sessions"
                         exact
                     >
                         <SessionList />
-                    </Route>
+                    </ProtectedRoute>
 
                     {/* If none of the other routes matched, we will show a 404. */}
                     <Route>
