@@ -7,7 +7,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
       SELECT session.* FROM session
       JOIN "user"
         ON "user".id = "session"."presenterId"
-      WHERE "user".id = $1
+      WHERE "session"."presenterId" = $1
       ORDER BY "createdAt" DESC
       LIMIT 20
     `;
@@ -15,6 +15,30 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
     const { rows } = await pool.query(sql, [req.user.id]);
 
     res.send(rows);
+});
+
+router.get('/:id', rejectUnauthenticated, async (req, res) => {
+    const sql = `
+      SELECT session.* FROM session
+      JOIN "user"
+        ON "user".id = "session"."presenterId"
+      WHERE "session"."presenterId" = $1
+      AND "session".id = $2
+    `;
+
+    const { rows } = await pool.query(sql, [
+        req.user.id,
+        req.params.id,
+    ]);
+
+    if (!rows.length) {
+        res.status(404).send({
+            message: `No session with id=${req.params.id} exists`,
+        });
+        return;
+    }
+
+    res.send(rows[0]);
 });
 
 router.post('/', rejectUnauthenticated, async (req, res) => {
@@ -28,7 +52,7 @@ router.post('/', rejectUnauthenticated, async (req, res) => {
 
     // Generate a join code
     // https://stackoverflow.com/a/12502559/830030
-    const joinCode = Math.random().toString(36).slice(2, 10).toUpperCase();
+    const joinCode = Math.random().toString(36).slice(2, 8).toUpperCase();
 
     const name = 'name' in req.body
         ? req.body.name

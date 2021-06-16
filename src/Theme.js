@@ -3,6 +3,7 @@ import { createMuiTheme } from '@material-ui/core';
 const theme = createMuiTheme({
     palette: {
         primary: { main: '#659157ff' },
+        secondary: { main: '#b52132' },
     },
     overrides: {
         MuiTableCell: {
@@ -17,6 +18,12 @@ const theme = createMuiTheme({
                 textTransform: 'initial',
                 fontSize: 16,
                 textShadow: '1px 1px 5px rgba(0, 0, 0, 0.5)',
+            },
+            outlined: {
+                textShadow: 'none',
+            },
+            outlinedSecondary: {
+                borderColor: '#b32031',
             },
         },
         MuiCssBaseline: {

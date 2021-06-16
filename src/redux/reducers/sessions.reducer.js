@@ -6,3 +6,12 @@ export const sessionList = (state = [], action) => {
 
     return state;
 };
+
+export const sessionDetails = (state = {}, action) => {
+    switch (action.type) {
+    case 'SET_SESSION_DETAILS':
+        return action.payload;
+    }
+
+    return state;
+};

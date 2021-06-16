@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 function ButtonLink({
     to,
     style,
+    color = 'primary',
+    variant = 'contained',
     children,
 }) {
     return (
         <Link to={to} style={{ textDecoration: 'none' }}>
             <Button
-                variant="contained"
-                color="primary"
+                variant={variant}
+                color={color}
                 style={style}
             >
                 {children}

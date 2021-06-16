@@ -26,11 +26,13 @@ import './colors.css';
 import './App.css';
 import SessionList from '../SessionList/SessionList';
 import CreateSession from '../CreateSession/CreateSession';
+import SessionDetails from '../SessionDetails/SessionDetails';
 
 function App() {
     const dispatch = useDispatch();
 
     const globalError = useSelector((store) => store.errors.globalError);
+    const toast = useSelector((store) => store.toast);
 
     useEffect(() => {
         dispatch({ type: 'FETCH_USER' });
@@ -127,6 +129,13 @@ function App() {
                         <CreateSession />
                     </ProtectedRoute>
 
+                    <ProtectedRoute
+                        path="/sessions/:id"
+                        exact
+                    >
+                        <SessionDetails />
+                    </ProtectedRoute>
+
                     {/* If none of the other routes matched, we will show a 404. */}
                     <Route>
                         <h1>404</h1>
@@ -134,9 +143,17 @@ function App() {
 
                 </Switch>
                 <Footer />
+
+                <Snackbar
+                    open={toast}
+                    autoHideDuration={1000}
+                    message={toast}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    onClose={() => dispatch({ type: 'CLEAR_TOAST' })}
+                />
+
                 <Snackbar
                     open={globalError}
-                    message="test"
                     onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
                     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 >
