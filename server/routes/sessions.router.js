@@ -6,7 +6,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
     const sql = `
       SELECT session.* FROM session
       JOIN "user"
-        ON "user".id = "session"."id"
+        ON "user".id = "session"."presenterId"
       WHERE "user".id = $1
       ORDER BY "createdAt" DESC
       LIMIT 20
