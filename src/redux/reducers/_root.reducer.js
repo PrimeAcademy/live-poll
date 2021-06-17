@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import errors from './errors.reducer';
 import user from './user.reducer';
-import { sessionList, sessionDetails } from './sessions.reducer';
+import { sessionList, sessionDetails, editSession } from './sessions.reducer';
 import toast from './toast.reducer';
 
 // rootReducer is the primary reducer for our entire project
@@ -16,6 +16,7 @@ const rootReducer = combineReducers({
     user, // will have an id and username if someone is logged in
     sessionList,
     sessionDetails,
+    editSession,
 });
 
 export default rootReducer;

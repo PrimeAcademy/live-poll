@@ -115,6 +115,7 @@ function App() {
                         <LandingPage />
                     </ProtectedRoute>
 
+                    {/* Session List */}
                     <ProtectedRoute
                         path="/sessions"
                         exact
@@ -122,6 +123,7 @@ function App() {
                         <SessionList />
                     </ProtectedRoute>
 
+                    {/* Create Session */}
                     <ProtectedRoute
                         path="/sessions/new"
                         exact
@@ -129,8 +131,17 @@ function App() {
                         <CreateSession />
                     </ProtectedRoute>
 
+                    {/* Session Details */}
                     <ProtectedRoute
                         path="/sessions/:id"
+                        exact
+                    >
+                        <SessionDetails />
+                    </ProtectedRoute>
+
+                    {/* Edit Session */}
+                    <ProtectedRoute
+                        path="/sessions/:id/edit"
                         exact
                     >
                         <SessionDetails />

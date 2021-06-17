@@ -67,4 +67,32 @@ router.post('/', rejectUnauthenticated, async (req, res) => {
     res.status(201).send(rows[0]);
 });
 
+router.put('/:id', async (req, res) => {
+    if (!('name' in req.body)) {
+        res.status(400).send({
+            message: 'Missing required "name" attribute in request body',
+        });
+        return;
+    }
+
+    const sql = `
+        UPDATE "session"
+        SET "name" = $1
+        WHERE id = $2
+        RETURNING *
+    `;
+    const { rows } = await pool.query(sql, [
+        req.body.name,
+        req.params.id,
+    ]);
+
+    if (rows.length !== 1) {
+        res.status(404).send({
+            message: `No session exists with id "${req.params.id}"`,
+        });
+    }
+
+    res.send(rows[0]);
+});
+
 module.exports = router;

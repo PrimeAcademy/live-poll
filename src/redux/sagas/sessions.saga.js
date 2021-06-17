@@ -38,11 +38,34 @@ function* createSession(action) {
     try {
         const { data } = yield axios.post('/api/sessions');
 
-        console.log({ action });
-
         if (action.payload.onSuccess) {
             action.payload.onSuccess(data);
         }
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: err,
+        });
+    }
+}
+
+function* updateSession(action) {
+    try {
+        // Immediately update local state with new value
+        yield put({
+            type: 'SET_SESSION_DETAILS',
+            payload: action.payload,
+        });
+
+        // Persist changes to server
+        const { data } = yield axios.put(`/api/sessions/${action.payload.id}`, action.payload);
+
+        // Make sure that local state is in sync with server
+        yield put({
+            type: 'SET_SESSION_DETAILS',
+            payload: data,
+        });
     } catch (err) {
         console.error(err);
         yield put({
@@ -56,6 +79,7 @@ function* sessionSaga() {
     yield takeLatest('FETCH_SESSION_LIST', fetchSessionList);
     yield takeLatest('FETCH_SESSION_DETAILS', fetchSessionDetails);
     yield takeLatest('CREATE_SESSION', createSession);
+    yield takeLatest('UPDATE_SESSION', updateSession);
 }
 
 export default sessionSaga;

@@ -15,3 +15,14 @@ export const sessionDetails = (state = {}, action) => {
 
     return state;
 };
+
+export const editSession = (state = {}, action) => {
+    switch (action.type) {
+    case 'SET_SESSION_DETAILS':
+        return action.payload;
+    case 'SET_EDIT_SESSION':
+        return { ...state, ...action.payload };
+    }
+
+    return state;
+};

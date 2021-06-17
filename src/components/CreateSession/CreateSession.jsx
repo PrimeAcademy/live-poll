@@ -31,7 +31,11 @@ function CreateSession() {
         >
 
             <Paper style={{ height: 500, textAlign: 'center' }}>
-                <h2 style={{ paddingTop: 130, color: 'var(--almost-black)' }}>
+                <h2 style={{
+                    paddingTop: 130,
+                    color: 'var(--almost-black)',
+                }}
+                >
                     Starting your session...
                 </h2>
                 <div style={{ padding: 20 }}>
