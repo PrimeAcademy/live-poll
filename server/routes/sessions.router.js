@@ -4,12 +4,15 @@ const { rejectUnauthenticated } = require('../modules/authentication-middleware'
 
 router.get('/', rejectUnauthenticated, async (req, res) => {
     const sql = `
-      SELECT session.* FROM session
-      JOIN "user"
-        ON "user".id = "session"."presenterId"
-      WHERE "session"."presenterId" = $1
-      ORDER BY "createdAt" DESC
-      LIMIT 20
+        SELECT 
+            session.*, 
+            to_json("user") as "presenter"
+        FROM session
+        JOIN "user"
+            ON "user".id = "session"."presenterId"
+        WHERE "session"."presenterId" = $1
+        ORDER BY "createdAt" DESC
+        LIMIT 20
     `;
 
     const { rows } = await pool.query(sql, [req.user.id]);
@@ -19,11 +22,14 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
 
 router.get('/:id', rejectUnauthenticated, async (req, res) => {
     const sql = `
-      SELECT session.* FROM session
-      JOIN "user"
-        ON "user".id = "session"."presenterId"
-      WHERE "session"."presenterId" = $1
-      AND "session".id = $2
+        SELECT 
+            session.*,
+            to_json("user") as "presenter"
+        FROM session
+        JOIN "user"
+            ON "user".id = "session"."presenterId"
+        WHERE "session"."presenterId" = $1
+        AND "session".id = $2
     `;
 
     const { rows } = await pool.query(sql, [

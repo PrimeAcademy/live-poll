@@ -1,6 +1,7 @@
 import {
     Container,
     makeStyles,
+    Paper,
 } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -10,7 +11,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     useHistory, useParams, useLocation, Link,
 } from 'react-router-dom';
+import moment from 'moment';
 import ButtonLink from '../Util/ButtonLink';
+import ScoresChart from '../ScoresChart/ScoresChart';
 
 const useStyles = makeStyles({
     sessionName: {
@@ -85,62 +88,78 @@ function SessionDetails() {
 
     return (
         <Container style={{ maxWidth: 980 }}>
-            <div>
-                {isEditMode
-                    ? (
-                        <>
-                            <form onSubmit={onSubmitName} style={{ display: 'inline-block' }}>
-                                <input
+            <div style={{ padding: '0 20px' }}>
+                <div style={{ display: 'inline-block' }}>
+                    {isEditMode
+                        ? (
+                            <>
+                                <form onSubmit={onSubmitName} style={{ display: 'inline-block' }}>
+                                    <input
                                     // eslint-disable-next-line jsx-a11y/no-autofocus
-                                    autoFocus
-                                    ref={nameInputRef}
-                                    type="text"
-                                    // todo save edit name state
-                                    value={editSession.name}
-                                    className={classes.sessionName}
-                                    onBlur={onSubmitName}
-                                    onChange={(e) => dispatch({
-                                        type: 'SET_EDIT_SESSION',
-                                        payload: { name: e.target.value },
-                                    })}
-                                />
-                                <MoreHorizIcon
-                                    style={{
-                                        fontSize: 26,
-                                        border: '1px solid rgba(0,0,0,0.9)',
-                                        borderRadius: 100,
-                                        marginLeft: 11,
-                                        background: 'white',
-                                        padding: 2,
-                                        color: '1px solid rgba(0,0,0,0.9)',
-                                    }}
-                                />
-                            </form>
-                        </>
-                    )
-                    : (
+                                        autoFocus
+                                        ref={nameInputRef}
+                                        type="text"
+                                        // todo save edit name state
+                                        value={editSession.name}
+                                        className={classes.sessionName}
+                                        onBlur={onSubmitName}
+                                        onChange={(e) => dispatch({
+                                            type: 'SET_EDIT_SESSION',
+                                            payload: { name: e.target.value },
+                                        })}
+                                    />
+                                    <MoreHorizIcon
+                                        style={{
+                                            fontSize: 26,
+                                            border: '1px solid rgba(0,0,0,0.9)',
+                                            borderRadius: 100,
+                                            marginLeft: 11,
+                                            background: 'white',
+                                            padding: 2,
+                                            color: '1px solid rgba(0,0,0,0.9)',
+                                        }}
+                                    />
+                                </form>
+                            </>
+                        )
+                        : (
                         /* Session name & edit link */
-                        <Link
-                            to={`/sessions/${session.id}/edit`}
-                            style={{
-                                textDecoration: 'none',
-                                color: 'inherit',
-                            }}
-                        >
-                            <h2
-                                className={`${classes.sessionName} h2`}
+                            <Link
+                                to={`/sessions/${session.id}/edit`}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                }}
                             >
-                                {session.name}
-                            </h2>
-                            <EditOutlinedIcon style={{
-                                fontSize: 22,
-                                marginLeft: 20,
-                                cursor: 'pointer',
-                            }}
-                            />
-                        </Link>
-                    )}
+                                <h2
+                                    className={`${classes.sessionName} h2`}
+                                >
+                                    {session.name}
+                                </h2>
+                                <EditOutlinedIcon style={{
+                                    fontSize: 22,
+                                    marginLeft: 20,
+                                    cursor: 'pointer',
+                                }}
+                                />
+                            </Link>
+                        )}
 
+                    {/* Presented by */}
+                    <div style={{ fontStyle: 'italic' }}>
+                        Presented by: {session.presenter.displayName}
+                        <br />
+                        {moment(session.createdAt).format(
+                            'MMM D hh:mma',
+                        )}
+                        {session.endedAt
+                            && ` - ${moment(session.endedAt).format(
+                                'hh:mma',
+                            )}`}
+                    </div>
+                </div>
+
+                {/* Side area: code + end sesh button */}
                 <div style={{ float: 'right' }}>
                     <div
                         style={{
@@ -178,7 +197,24 @@ function SessionDetails() {
                         End Session
                     </ButtonLink>
                 </div>
+
+                <div style={{ clear: 'both' }} />
             </div>
+
+            {/* Feedback scores chart */}
+            <Paper style={{
+                padding: 20,
+                marginTop: 20,
+            }}
+            >
+                <div style={{
+                    height: 500,
+                    margin: '20px auto',
+                }}
+                >
+                    <ScoresChart />
+                </div>
+            </Paper>
         </Container>
     );
 }
