@@ -157,11 +157,17 @@ function App() {
 
                 <Snackbar
                     open={toast}
-                    autoHideDuration={1000}
-                    message={toast}
+                    autoHideDuration={1500}
                     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     onClose={() => dispatch({ type: 'CLEAR_TOAST' })}
-                />
+                >
+                    <Alert
+                        onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
+                        severity="info"
+                    >
+                        {toast}
+                    </Alert>
+                </Snackbar>
 
                 <Snackbar
                     open={globalError}

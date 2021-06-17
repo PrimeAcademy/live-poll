@@ -69,7 +69,7 @@ function SessionList() {
                                 <TableCell style={{ maxWidth: 40, paddingLeft: 0 }}>
 
                                     <div style={{
-                                        width: 60,
+                                        width: 50,
                                         height: 35,
                                     }}
                                     >

@@ -13,6 +13,11 @@ const theme = createMuiTheme({
                 padding: '10px 0 10px 12px',
             },
         },
+        MuiAlert: {
+            root: {
+                border: '1px solid rgb(169 151 150 / 45%)',
+            },
+        },
         MuiButton: {
             root: {
                 fontWeight: 'bold',

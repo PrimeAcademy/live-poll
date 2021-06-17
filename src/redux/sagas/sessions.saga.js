@@ -73,12 +73,29 @@ function* updateSession(action) {
         });
     }
 }
+function* deleteSession(action) {
+    try {
+        yield put({
+            type: 'REMOVE_SESSION',
+            payload: action.payload,
+        });
+
+        yield axios.delete(`/api/sessions/${action.payload}`);
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: err,
+        });
+    }
+}
 
 function* sessionSaga() {
     yield takeLatest('FETCH_SESSION_LIST', fetchSessionList);
     yield takeLatest('FETCH_SESSION_DETAILS', fetchSessionDetails);
     yield takeLatest('CREATE_SESSION', createSession);
     yield takeLatest('UPDATE_SESSION', updateSession);
+    yield takeLatest('DELETE_SESSION', deleteSession);
 }
 
 export default sessionSaga;

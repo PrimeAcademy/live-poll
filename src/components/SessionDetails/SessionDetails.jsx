@@ -5,6 +5,7 @@ import {
     Table,
     TableBody,
     TableContainer,
+    Button,
 } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -31,6 +32,10 @@ const useStyles = makeStyles({
 
         '&.h2': {
             cursor: 'text',
+            maxWidth: 600,
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
         },
         '&.h2:hover': {
             background: 'white',
@@ -87,6 +92,20 @@ function SessionDetails() {
 
         // Leave edit mode
         history.push(`/sessions/${session.id}`);
+    };
+
+    const deleteSession = () => {
+        dispatch({
+            type: 'DELETE_SESSION',
+            payload: session.id,
+        });
+
+        dispatch({
+            type: 'SET_TOAST',
+            payload: 'Session deleted',
+        });
+
+        history.push('/sessions');
     };
 
     return (
@@ -187,19 +206,44 @@ function SessionDetails() {
                             }}
                         />
                     </div>
-                    {session.endedAt || (
-                        <ButtonLink
-                            to="/sessions/new"
-                            style={{
-                                fontSize: 14,
-                                padding: '2px 10px',
-                                float: 'right',
-                            }}
-                            color="secondary"
-                            variant="outlined"
-                        >
-                            End Session
-                        </ButtonLink>
+
+                    {/* If the session has already ended
+                        don't show end/cancel buttons
+                     */}
+                    {!!session.endedAt || (
+                        session.participants.length
+                            ? (
+                                // If participants have already joined,
+                                // show End Session
+                                <ButtonLink
+                                    to="/sessions/new"
+                                    style={{
+                                        fontSize: 14,
+                                        padding: '2px 10px',
+                                        float: 'right',
+                                    }}
+                                    color="secondary"
+                                    variant="outlined"
+                                >
+                                    End Session
+                                </ButtonLink>
+                            )
+                            : (
+                                // If no participants have joined yet,
+                                // we can "cancel" (delete) the session
+                                <Button
+                                    onClick={deleteSession}
+                                    style={{
+                                        fontSize: 14,
+                                        padding: '2px 10px',
+                                        float: 'right',
+                                    }}
+                                    color="secondary"
+                                    variant="outlined"
+                                >
+                                    Cancel Session
+                                </Button>
+                            )
                     )}
                 </div>
 

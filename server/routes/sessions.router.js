@@ -105,9 +105,28 @@ router.put('/:id', async (req, res) => {
         res.status(404).send({
             message: `No session exists with id "${req.params.id}"`,
         });
+        return;
     }
 
     res.send(rows[0]);
+});
+
+router.delete('/:id', async (req, res) => {
+    const sql = `
+        DELETE FROM "session"
+        WHERE id=$1
+        RETURNING *
+    `;
+    const { rows } = await pool.query(sql, [req.params.id]);
+
+    if (rows.length !== 1) {
+        res.status(404).send({
+            message: `No session exists with id "${req.params.id}"`,
+        });
+        return;
+    }
+
+    res.sendStatus(204);
 });
 
 module.exports = router;
