@@ -3,10 +3,7 @@ import {
     makeStyles,
     Paper,
     Table,
-    Button,
     TableBody,
-    TableRow,
-    TableCell,
     TableContainer,
 } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
@@ -20,7 +17,7 @@ import {
 import moment from 'moment';
 import ButtonLink from '../Util/ButtonLink';
 import ScoresChart from '../ScoresChart/ScoresChart';
-import MiniScoresChart from '../ScoresChart/MiniScoresChart';
+import ParticipantRow from './ParticipantRow';
 
 const useStyles = makeStyles({
     sessionName: {
@@ -190,113 +187,110 @@ function SessionDetails() {
                             }}
                         />
                     </div>
-                    <ButtonLink
-                        to="/sessions/new"
-                        style={{
-                            fontSize: 14,
-                            padding: '2px 10px',
-                            float: 'right',
-                        }}
-                        color="secondary"
-                        variant="outlined"
-                    >
-                        End Session
-                    </ButtonLink>
+                    {session.endedAt || (
+                        <ButtonLink
+                            to="/sessions/new"
+                            style={{
+                                fontSize: 14,
+                                padding: '2px 10px',
+                                float: 'right',
+                            }}
+                            color="secondary"
+                            variant="outlined"
+                        >
+                            End Session
+                        </ButtonLink>
+                    )}
                 </div>
 
                 <div style={{ clear: 'both' }} />
             </div>
 
-            {/* Feedback scores chart */}
             <Paper style={{
                 padding: 20,
                 marginTop: 20,
             }}
             >
+
+                {/* Feedback scores chart */}
                 <div style={{
                     height: 500,
                     margin: '20px auto',
                 }}
                 >
-                    <ScoresChart />
+                    {session.participants.length
+                        ? <ScoresChart />
+                        : (
+                            <div style={{
+                                height: '100%',
+                                padding: 140,
+                                outline: '1px solid black',
+                                textAlign: 'center',
+                            }}
+                            >
+                                <h3 style={{ fontSize: 20, margin: 0 }}>
+                                    Invite Participants to join:
+                                </h3>
+                                <h2 style={{
+                                    margin: '20px 0 0 0',
+                                    fontSize: 35,
+                                }}
+                                >live-poll.herokuapp.com
+                                </h2>
+
+                                <h3 style={{ margin: '35px 0 0 0' }}>Session Code</h3>
+                                <h3
+                                    style={{
+                                        fontSize: 18,
+                                        marginLeft: 6,
+                                        marginTop: 7,
+                                        verticalAlign: -3,
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <div
+                                        onKeyDown={copyJoinCode}
+                                        onClick={copyJoinCode}
+                                        role="button"
+                                        tabIndex="0"
+                                    >
+                                        {session.joinCode}
+                                        <FileCopyOutlinedIcon
+                                            style={{
+                                                fontSize: 18,
+                                                marginLeft: 5,
+                                                verticalAlign: -2,
+                                            }}
+                                        />
+                                    </div>
+                                </h3>
+                            </div>
+                        )}
                 </div>
 
                 {/* Participants */}
                 <h2 style={{ paddingTop: 20 }}>Participants</h2>
-                <TableContainer>
-                    <Table>
-                        <TableBody>
-                            {session.participants.map((participant) => (
-                                <TableRow>
-                                    {/* Scores chart */}
-                                    <TableCell style={{ maxWidth: 60, paddingLeft: 0 }}>
-                                        <div style={{
-                                            width: 60,
-                                            height: 35,
-                                            marginLeft: -6,
-                                        }}
-                                        >
-                                            <MiniScoresChart />
-                                        </div>
-                                    </TableCell>
 
-                                    {/* Average scores */}
-                                    <TableCell style={{
-                                        fontSize: 22,
-                                        paddingLeft: 12,
-                                    }}
-                                    >
-                                        <span style={{
-                                            fontWeight: 'bold',
-                                            fontSize: 24,
-                                        }}
-                                        >
-                                            {(Math.random() * 5).toFixed(1)}
-                                        </span>
-                                        <span style={{
-                                            fontSize: 14,
-                                        }}
-                                        >
-                                            &nbsp;/ {(Math.random() * 5).toFixed(1)} avg
-                                        </span>
-                                    </TableCell>
+                {session.participants.length
+                    ? (
 
-                                    {/* Name */}
-                                    <TableCell style={{ fontWeight: 'bold' }}>
-                                        {participant.displayName}
-                                    </TableCell>
+                        <TableContainer>
+                            <Table>
+                                <TableBody>
+                                    {session.participants.map((participant) => (
+                                        <ParticipantRow
+                                            key={participant.id}
+                                            participant={participant}
+                                        />
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )
+                    : (
+                        <h3>No participants have joined yet</h3>
+                    )}
 
-                                    {/* Joined at date */}
-                                    <TableCell style={{
-                                        fontStyle: 'italic',
-                                        fontSize: 14,
-                                        paddingRight: 34,
-                                        maxWidth: 130,
-                                    }}
-                                    >
-                                        Joined @ {moment(participant.joinedAt)
-                                            .format('h:mma')}
-                                    </TableCell>
-
-                                    {/* Kick User */}
-                                    <TableCell>
-                                        <Button
-                                            color="secondary"
-                                            variant="outlined"
-                                            style={{
-                                                fontSize: 14,
-                                                padding: '4px 14px',
-                                            }}
-                                        >
-                                            Kick User
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-
-                        </TableBody>
-                    </Table>
-                </TableContainer>
             </Paper>
         </Container>
     );

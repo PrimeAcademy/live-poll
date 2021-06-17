@@ -38,6 +38,11 @@ function* createSession(action) {
     try {
         const { data } = yield axios.post('/api/sessions');
 
+        yield put({
+            type: 'FETCH_SESSION_DETAILS',
+            payload: data.id,
+        });
+
         if (action.payload.onSuccess) {
             action.payload.onSuccess(data);
         }

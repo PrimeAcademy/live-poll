@@ -10,12 +10,12 @@ function Nav() {
 
     const loginLinkData = {
         path: '/login',
-        text: 'Login / Register',
+        text: 'Login',
     };
 
     if (user.id != null) {
-        loginLinkData.path = '/user';
-        loginLinkData.text = 'Home';
+        loginLinkData.path = '/sessions';
+        loginLinkData.text = 'Past Sessions';
     }
 
     return (
@@ -46,23 +46,17 @@ function Nav() {
                     LivePoll
                 </h2>
             </Link>
-            <div>
+            <div style={{
+                paddingRight: 30,
+            }}
+            >
                 <Link className="navLink" to={loginLinkData.path}>
                     {loginLinkData.text}
                 </Link>
 
                 {user.id && (
-                    <>
-                        <Link className="navLink" to="/info">
-                            Info Page
-                        </Link>
-                        <LogOutButton className="navLink" />
-                    </>
+                    <LogOutButton className="navLink" />
                 )}
-
-                <Link className="navLink" to="/about">
-                    About
-                </Link>
             </div>
         </div>
     );

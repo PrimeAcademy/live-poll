@@ -48,6 +48,11 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
         return;
     }
 
+    const session = rows[0];
+
+    // postgress returns [null] if there are no particpants
+    session.participants = session.participants.filter(Boolean);
+
     res.send(rows[0]);
 });
 
