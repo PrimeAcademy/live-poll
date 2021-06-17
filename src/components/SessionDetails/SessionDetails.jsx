@@ -4,6 +4,7 @@ import {
     Paper,
     Table,
     Button,
+    TableBody,
     TableRow,
     TableCell,
     TableContainer,
@@ -23,7 +24,6 @@ import MiniScoresChart from '../ScoresChart/MiniScoresChart';
 
 const useStyles = makeStyles({
     sessionName: {
-        minWidth: 450,
         display: 'inline-block',
         fontSize: 30,
         lineHeight: 1.35,
@@ -224,64 +224,77 @@ function SessionDetails() {
                 {/* Participants */}
                 <h2 style={{ paddingTop: 20 }}>Participants</h2>
                 <TableContainer>
-                    <Table style={{ width: '80%' }}>
-                        <TableRow>
-                            {/* Scores chart */}
-                            <TableCell style={{ maxWidth: 60 }}>
-                                <div style={{
-                                    width: 60,
-                                    height: 35,
-                                }}
-                                >
-                                    <MiniScoresChart />
-                                </div>
-                            </TableCell>
+                    <Table>
+                        <TableBody>
+                            {session.participants.map((participant) => (
+                                <TableRow>
+                                    {/* Scores chart */}
+                                    <TableCell style={{ maxWidth: 60, paddingLeft: 0 }}>
+                                        <div style={{
+                                            width: 60,
+                                            height: 35,
+                                            marginLeft: -6,
+                                        }}
+                                        >
+                                            <MiniScoresChart />
+                                        </div>
+                                    </TableCell>
 
-                            {/* Average scores */}
-                            <TableCell style={{
-                                fontSize: 22,
-                                color: 'rgba(0, 0, 0, 0.65)',
-                                paddingLeft: 12,
-                            }}
-                            >
-                                {
-                                    (Math.random() * 5).toFixed(1)
-                                } / {
-                                    (Math.random() * 5).toFixed(1)
-                                }
-                            </TableCell>
-
-                            {/* Name */}
-                            <TableCell style={{ fontWeight: 'bold' }}>
-                                Painted Puma
-                            </TableCell>
-
-                            {/* Joined at date */}
-                            <TableCell style={{
-                                fontStyle: 'italic',
-                                fontSize: 14,
-                                textAlign: 'right',
-                                paddingRight: 34,
-                            }}
-                            >
-                                {moment()
-                                    .format('MMM D, \'YY @ h:mma')}
-                            </TableCell>
-
-                            {/* Kick User */}
-                            <TableCell>
-                                <Button
-                                    color="secondary"
-                                    variant="outlined"
-                                    style={{
-                                        fontSize: 14,
-                                        padding: '4px 14px',
+                                    {/* Average scores */}
+                                    <TableCell style={{
+                                        fontSize: 22,
+                                        paddingLeft: 12,
                                     }}
-                                >
-                                    Kick User
-                                </Button>
-                            </TableCell>
-                        </TableRow>
+                                    >
+                                        <span style={{
+                                            fontWeight: 'bold',
+                                            fontSize: 24,
+                                        }}
+                                        >
+                                            {(Math.random() * 5).toFixed(1)}
+                                        </span>
+                                        <span style={{
+                                            fontSize: 14,
+                                        }}
+                                        >
+                                            &nbsp;/ {(Math.random() * 5).toFixed(1)} avg
+                                        </span>
+                                    </TableCell>
+
+                                    {/* Name */}
+                                    <TableCell style={{ fontWeight: 'bold' }}>
+                                        {participant.displayName}
+                                    </TableCell>
+
+                                    {/* Joined at date */}
+                                    <TableCell style={{
+                                        fontStyle: 'italic',
+                                        fontSize: 14,
+                                        paddingRight: 34,
+                                        maxWidth: 130,
+                                    }}
+                                    >
+                                        Joined @ {moment(participant.joinedAt)
+                                            .format('h:mma')}
+                                    </TableCell>
+
+                                    {/* Kick User */}
+                                    <TableCell>
+                                        <Button
+                                            color="secondary"
+                                            variant="outlined"
+                                            style={{
+                                                fontSize: 14,
+                                                padding: '4px 14px',
+                                            }}
+                                        >
+                                            Kick User
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </Paper>

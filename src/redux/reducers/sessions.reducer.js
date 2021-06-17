@@ -7,7 +7,7 @@ export const sessionList = (state = [], action) => {
     return state;
 };
 
-export const sessionDetails = (state = { presenter: {} }, action) => {
+export const sessionDetails = (state = { presenter: {}, participants: [] }, action) => {
     switch (action.type) {
     case 'SET_SESSION_DETAILS':
         return action.payload;
@@ -16,7 +16,7 @@ export const sessionDetails = (state = { presenter: {} }, action) => {
     return state;
 };
 
-export const editSession = (state = { presenter: {} }, action) => {
+export const editSession = (state = { presenter: {}, participants: [] }, action) => {
     switch (action.type) {
     case 'SET_SESSION_DETAILS':
         return action.payload;

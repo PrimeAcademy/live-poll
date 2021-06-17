@@ -59,13 +59,7 @@ function* updateSession(action) {
         });
 
         // Persist changes to server
-        const { data } = yield axios.put(`/api/sessions/${action.payload.id}`, action.payload);
-
-        // Make sure that local state is in sync with server
-        yield put({
-            type: 'SET_SESSION_DETAILS',
-            payload: data,
-        });
+        yield axios.put(`/api/sessions/${action.payload.id}`, action.payload);
     } catch (err) {
         console.error(err);
         yield put({

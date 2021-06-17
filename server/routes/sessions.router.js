@@ -24,12 +24,16 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     const sql = `
         SELECT 
             session.*,
-            to_json("user") as "presenter"
+            to_json("user") as "presenter",
+            array_agg(to_json("participant")) as "participants"
         FROM session
         JOIN "user"
             ON "user".id = "session"."presenterId"
+        LEFT JOIN "participant"
+            ON "participant"."sessionId" = "session".id
         WHERE "session"."presenterId" = $1
         AND "session".id = $2
+        GROUP BY "session"."id", "user".id
     `;
 
     const { rows } = await pool.query(sql, [

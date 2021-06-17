@@ -4,6 +4,7 @@ const theme = createMuiTheme({
     palette: {
         primary: { main: '#659157ff' },
         secondary: { main: '#b52132' },
+        warning: { main: '#ff9800' },
     },
     overrides: {
         MuiTableCell: {

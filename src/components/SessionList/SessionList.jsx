@@ -66,7 +66,7 @@ function SessionList() {
                             <TableRow key={sesh.id} style={{ position: 'relative' }}>
 
                                 {/* Scores chart */}
-                                <TableCell style={{ maxWidth: 60 }}>
+                                <TableCell style={{ maxWidth: 40, paddingLeft: 0 }}>
 
                                     <div style={{
                                         width: 60,
