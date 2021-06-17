@@ -2,6 +2,11 @@ import {
     Container,
     makeStyles,
     Paper,
+    Table,
+    Button,
+    TableRow,
+    TableCell,
+    TableContainer,
 } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -14,6 +19,7 @@ import {
 import moment from 'moment';
 import ButtonLink from '../Util/ButtonLink';
 import ScoresChart from '../ScoresChart/ScoresChart';
+import MiniScoresChart from '../ScoresChart/MiniScoresChart';
 
 const useStyles = makeStyles({
     sessionName: {
@@ -214,6 +220,70 @@ function SessionDetails() {
                 >
                     <ScoresChart />
                 </div>
+
+                {/* Participants */}
+                <h2 style={{ paddingTop: 20 }}>Participants</h2>
+                <TableContainer>
+                    <Table style={{ width: '80%' }}>
+                        <TableRow>
+                            {/* Scores chart */}
+                            <TableCell style={{ maxWidth: 60 }}>
+                                <div style={{
+                                    width: 60,
+                                    height: 35,
+                                }}
+                                >
+                                    <MiniScoresChart />
+                                </div>
+                            </TableCell>
+
+                            {/* Average scores */}
+                            <TableCell style={{
+                                fontSize: 22,
+                                color: 'rgba(0, 0, 0, 0.65)',
+                                paddingLeft: 12,
+                            }}
+                            >
+                                {
+                                    (Math.random() * 5).toFixed(1)
+                                } / {
+                                    (Math.random() * 5).toFixed(1)
+                                }
+                            </TableCell>
+
+                            {/* Name */}
+                            <TableCell style={{ fontWeight: 'bold' }}>
+                                Painted Puma
+                            </TableCell>
+
+                            {/* Joined at date */}
+                            <TableCell style={{
+                                fontStyle: 'italic',
+                                fontSize: 14,
+                                textAlign: 'right',
+                                paddingRight: 34,
+                            }}
+                            >
+                                {moment()
+                                    .format('MMM D, \'YY @ h:mma')}
+                            </TableCell>
+
+                            {/* Kick User */}
+                            <TableCell>
+                                <Button
+                                    color="secondary"
+                                    variant="outlined"
+                                    style={{
+                                        fontSize: 14,
+                                        padding: '4px 14px',
+                                    }}
+                                >
+                                    Kick User
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    </Table>
+                </TableContainer>
             </Paper>
         </Container>
     );

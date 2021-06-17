@@ -93,6 +93,8 @@ function SessionList() {
                                         {sesh.name}
                                     </Link>
                                 </TableCell>
+
+                                {/* Date */}
                                 <TableCell style={{
                                     fontStyle: 'italic',
                                     fontSize: 14,
