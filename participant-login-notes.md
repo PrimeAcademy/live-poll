@@ -4,7 +4,7 @@ Things
 [x] Client side routing -- different app for client, based on hostname
   - thinking I'll do two deployment, or a subdomain or something?
   - two <Router> components, just do a ternary on window.hostname
-- Passport auth
+[x] Passport auth
   - can we get a req.user from passport?
 - Socket + auth
   - integrate with passport

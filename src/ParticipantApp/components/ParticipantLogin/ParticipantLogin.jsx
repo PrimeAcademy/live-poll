@@ -1,19 +1,27 @@
 // @ts-nocheck
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 function ParticipantLogin() {
     const dispatch = useDispatch();
     const [joinCode, setJoinCode] = useState('');
 
-    const errors = useSelector((s) => s.errors);
-    console.log({ errors });
+    const user = useSelector((store) => store.user);
+    // todo: redirect if user
+    if (user && user.id) {
+        return (
+            <Redirect to="/" />
+        );
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
         dispatch({
             type: 'LOGIN',
-            payload: { joinCode },
+            payload: {
+                joinCode,
+            },
         });
     };
 

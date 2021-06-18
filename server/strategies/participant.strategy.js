@@ -10,7 +10,7 @@ passport.use('participant', new CustomStrategy(
                 SELECT * FROM "session"
                 WHERE "joinCode" = $1;
             `, [
-                req.body.joinCode,
+                req.body.joinCode.toUpperCase(),
             ]);
 
             const session = sessionRows[0];
