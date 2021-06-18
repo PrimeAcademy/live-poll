@@ -17,7 +17,7 @@ function CreateSession() {
             payload: {
                 onSuccess: (sesh) => {
                     setTimeout(() => {
-                        history.push(`/sessions/${sesh.id}`);
+                        history.push(`/sessions/${sesh.id}/edit`);
                     }, 1000);
                 },
             },
