@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import errors from './errors.reducer';
 import user from './user.reducer';
 import toast from './toast.reducer';
+import { score } from './scores.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -12,7 +13,8 @@ import toast from './toast.reducer';
 const rootReducer = combineReducers({
     errors, // contains registrationMessage and loginMessage
     toast,
-    user, // will have an id and username if someone is logged in
+    user, // will have an id and username if someone is logged in,
+    score,
 });
 
 export default rootReducer;

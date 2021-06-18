@@ -1,9 +1,11 @@
+const http = require('http');
 const express = require('express');
 require('express-async-errors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app);
 
 const passport = require('passport');
 const sessionMiddleware = require('./modules/session-middleware');
@@ -16,6 +18,9 @@ const userRouter = require('./routes/user.router');
 const sessionsRouter = require('./routes/sessions.router');
 
 const participantRouter = require('./routes/participant.router');
+
+// Setup socket.io
+require('./io')(server);
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -50,6 +55,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 /** Listen * */
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Listening on port: ${PORT}`);
 });
