@@ -1,6 +1,7 @@
 const passport = require('passport');
 const { Strategy: CustomStrategy } = require('passport-custom');
 const pool = require('../modules/pool');
+const randomName = require('../modules/randomName');
 
 passport.use('participant', new CustomStrategy(
     async (req, done) => {
@@ -29,7 +30,7 @@ passport.use('participant', new CustomStrategy(
                 RETURNING *
             `, [
                 session.id,
-                'Purple Penguin', // TODO generate name
+                randomName(),
             ]);
 
             const participant = {
