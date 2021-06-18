@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 
+import participantStore from './ParticipantApp/redux/store';
 import presenterStore from './PresenterApp/redux/store';
 import PresenterApp from './PresenterApp/components/App/App';
 import PresenterTheme from './PresenterApp/Theme';
@@ -22,7 +23,12 @@ const App = isPresenterSubdomain
         </Provider>
     )
     : (
-        <ParticipantApp />
+        <Provider store={participantStore}>
+            <ThemeProvider theme={PresenterTheme}>{/* TODO: ParticipantTheme? */}
+                <CssBaseline />
+                <ParticipantApp />
+            </ThemeProvider>
+        </Provider>
     );
 
 ReactDOM.render(

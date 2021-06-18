@@ -37,6 +37,7 @@
   },
   "scripts": {
     "start": "node server/server.js",
+    "client": "react-scripts start",
     "presenter": "PORT=3001 HOST=presenter.livepoll.local react-scripts start",
     "participant": "PORT=3002 HOST=participant.livepoll.local react-scripts start",
     "server": "nodemon --watch server server/server.js",

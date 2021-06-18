@@ -1,8 +1,25 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
+import ParticipantLogin from '../ParticipantLogin/ParticipantLogin';
+
 function App() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch({ type: 'AFDFDSf' });
+    }, [dispatch]);
+
     return (
-        <>
-            <h1>Participant App</h1>
-        </>
+        <Router>
+            <Switch>
+                <Route
+                    path="/"
+                >
+                    <ParticipantLogin />
+                </Route>
+            </Switch>
+        </Router>
     );
 }
 

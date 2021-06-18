@@ -1,7 +1,7 @@
 Things
-- Two separate app?
+[x] Two separate app?
   - https://blog.logrocket.com/multiple-entry-points-in-create-react-app-without-ejecting/
-- Client side routing -- different app for client, based on hostname
+[x] Client side routing -- different app for client, based on hostname
   - thinking I'll do two deployment, or a subdomain or something?
   - two <Router> components, just do a ternary on window.hostname
 - Passport auth
