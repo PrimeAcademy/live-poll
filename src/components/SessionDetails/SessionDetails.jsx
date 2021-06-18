@@ -11,6 +11,8 @@ import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+
+import PersonIcon from '@material-ui/icons/Person';
 import { useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -334,7 +336,25 @@ function SessionDetails() {
                 </div>
 
                 {/* Participants */}
-                <h2 style={{ paddingTop: 20 }}>Participants</h2>
+                <h2 style={{ paddingTop: 20 }}>
+                    Participants
+                    <div style={{
+                        display: 'inline-block',
+                        fontSize: 14,
+                        marginLeft: 30,
+                        color: 'var(--almost-black)',
+                        verticalAlign: 2,
+                    }}
+                    >
+                        {session.participants.length}
+                        <PersonIcon style={{
+                            verticalAlign: -5,
+                            fontSize: 22,
+                            marginLeft: 3,
+                        }}
+                        />
+                    </div>
+                </h2>
 
                 {session.participants.length
                     ? (
