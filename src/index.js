@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import store from './redux/store';
-import App from './components/App/App';
-import theme from './Theme';
+import store from './PresenterApp/redux/store';
+import App from './PresenterApp/components/App/App';
+import theme from './PresenterApp/Theme';
 
 ReactDOM.render(
     <Provider store={store}>
