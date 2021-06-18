@@ -5,7 +5,6 @@ import C3Chart from 'react-c3js';
 import 'c3/c3.css';
 import { useRef, useEffect } from 'react';
 import Chart from 'react-apexcharts';
-
 import ApexCharts from 'apexcharts';
 
 function ScoreHistory() {
@@ -13,20 +12,30 @@ function ScoreHistory() {
         (store) => store.scores,
     );
 
+    useEffect(() => {
+        console.log('eff', scores.length);
+        ApexCharts.exec('realtime', 'updateSeries', [{
+            data: scores.map((s) => ([s.createdAt.getTime(), s.value])),
+        }]);
+    }, [scores]);
+
     return (
         <Chart
             type="line"
             options={{
+                chart: {
+                    id: 'realtime',
+                    animations: {
+                        enabled: true,
+                        easing: 'linear',
+                        dynamicAnimation: {
+                            speed: 1000,
+                        },
+                    },
+                },
                 id: 'realtime',
                 height: 350,
                 type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 1000,
-                    },
-                },
                 toolbar: {
                     show: false,
                 },
@@ -36,7 +45,8 @@ function ScoreHistory() {
             }}
             series={[{
                 // https://apexcharts.com/docs/series/
-                data: scores.map((s) => ([s.createdAt.getTime(), s.value])),
+                // data: scores.map((s) => ([s.createdAt.getTime(), s.value])),
+                data: [],
             }]}
             dataLabels={{ enabled: false }}
             stroke={{ curve: 'smooth' }}
