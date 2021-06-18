@@ -3,8 +3,50 @@ import { Scatter, Line } from 'react-chartjs-2';
 import moment from 'moment';
 import C3Chart from 'react-c3js';
 import 'c3/c3.css';
+import { useRef, useEffect } from 'react';
+import Chart from 'react-apexcharts';
+
+import ApexCharts from 'apexcharts';
 
 function ScoreHistory() {
+    const scores = useSelector(
+        (store) => store.scores,
+    );
+
+    return (
+        <Chart
+            type="line"
+            options={{
+                id: 'realtime',
+                height: 350,
+                type: 'line',
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 1000,
+                    },
+                },
+                toolbar: {
+                    show: false,
+                },
+                zoom: {
+                    enabled: false,
+                },
+            }}
+            series={[{
+                // https://apexcharts.com/docs/series/
+                data: scores.map((s) => ([s.createdAt.getTime(), s.value])),
+            }]}
+            dataLabels={{ enabled: false }}
+            stroke={{ curve: 'smooth' }}
+            xaxis={{ type: 'datetime' }}
+            legend={{ show: false }}
+        />
+    );
+}
+
+function ScoreHistory_c3() {
     const scores = useSelector(
         (store) => store.scores,
     );
