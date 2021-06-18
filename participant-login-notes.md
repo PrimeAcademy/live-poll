@@ -8,6 +8,7 @@ Things
   - can we get a req.user from passport?
 - Socket + auth
   - integrate with passport
+    - https://github.com/socketio/socket.io/tree/master/examples/passport-example
     - benefit here is cookie/session management
     - or... is it easier to do our own auth with sessionio-auth or whatever
 

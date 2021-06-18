@@ -5,12 +5,17 @@ require('dotenv').config();
 
 const app = express();
 
+const passport = require('passport');
 const sessionMiddleware = require('./modules/session-middleware');
-const passport = require('./strategies/user.strategy');
+require('./strategies/serialize');
+require('./strategies/presenter.strategy');
+require('./strategies/participant.strategy');
 
 // Route includes
 const userRouter = require('./routes/user.router');
 const sessionsRouter = require('./routes/sessions.router');
+
+const participantRouter = require('./routes/participant.router');
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -27,11 +32,15 @@ app.use(passport.session());
 app.use('/api/user', userRouter);
 app.use('/api/sessions', sessionsRouter);
 
+app.use('/api/participants', participantRouter);
+
 // Serve static files
 app.use(express.static('build'));
 
 // Error handler
 app.use((err, req, res, next) => {
+    console.error('Uncaught API Error:', err);
+
     res.status(500).send({
         message: `Internal Server Error: ${err.message}`,
     });

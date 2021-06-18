@@ -1,15 +1,20 @@
 // @ts-nocheck
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ParticipantLogin() {
+    const dispatch = useDispatch();
     const [joinCode, setJoinCode] = useState('');
 
     const errors = useSelector((s) => s.errors);
     console.log({ errors });
 
-    const onSubmit = () => {
-        console.log('sub');
+    const onSubmit = (e) => {
+        e.preventDefault();
+        dispatch({
+            type: 'LOGIN',
+            payload: { joinCode },
+        });
     };
 
     return (

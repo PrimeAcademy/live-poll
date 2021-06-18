@@ -1,10 +1,10 @@
 const express = require('express');
+const passport = require('passport');
 const {
     rejectUnauthenticated,
 } = require('../modules/authentication-middleware');
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
-const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
@@ -39,7 +39,7 @@ router.post('/register', (req, res, next) => {
 // userStrategy.authenticate('local') is middleware that we run on this route
 // this middleware will run our POST if successful
 // this middleware will send a 404 if not successful
-router.post('/login', userStrategy.authenticate('local'), (req, res) => {
+router.post('/login', passport.authenticate('presenter'), (req, res) => {
     res.sendStatus(200);
 });
 
