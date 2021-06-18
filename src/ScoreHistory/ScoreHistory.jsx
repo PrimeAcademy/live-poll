@@ -8,16 +8,16 @@ import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 
 function ScoreHistory() {
-    const scores = useSelector(
+    /* const scores = useSelector(
         (store) => store.scores,
-    );
+    ); */
+    const lastScore = useSelector((store) => store.currentScore);
 
     useEffect(() => {
-        console.log('eff', scores.length);
-        ApexCharts.exec('realtime', 'updateSeries', [{
-            data: scores.map((s) => ([s.createdAt.getTime(), s.value])),
+        ApexCharts.exec('realtime', 'appendData', [{
+            data: [[lastScore.createdAt.getTime(), lastScore.value]],
         }]);
-    }, [scores]);
+    }, [lastScore]);
 
     return (
         <Chart
@@ -29,7 +29,7 @@ function ScoreHistory() {
                         enabled: true,
                         easing: 'linear',
                         dynamicAnimation: {
-                            speed: 1000,
+                            speed: 800,
                         },
                     },
                 },

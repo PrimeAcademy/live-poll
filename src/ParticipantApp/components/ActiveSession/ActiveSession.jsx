@@ -21,7 +21,7 @@ const ScoreSlider = withStyles({
 
 function ActiveSession() {
     const dispatch = useDispatch();
-    const score = useSelector((store) => store.scores[store.scores.length - 1]?.value);
+    const score = useSelector((store) => store.currentScore?.value);
 
     return (
         <>
