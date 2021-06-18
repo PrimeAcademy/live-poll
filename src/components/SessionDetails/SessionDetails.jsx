@@ -152,6 +152,7 @@ function SessionDetails() {
                                             type: 'SET_EDIT_SESSION',
                                             payload: { name: e.target.value },
                                         })}
+                                        style={{ width: 600 }}
                                     />
                                     <MoreHorizIcon
                                         style={{
@@ -185,6 +186,7 @@ function SessionDetails() {
                                     fontSize: 22,
                                     marginLeft: 20,
                                     cursor: 'pointer',
+                                    verticalAlign: 12,
                                 }}
                                 />
                             </Link>
