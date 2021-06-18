@@ -3,7 +3,7 @@ import { put, select, takeLatest } from 'redux-saga/effects';
 function* sendScore(action) {
     // Save score to local state
     yield put({
-        type: 'SET_SCORE',
+        type: 'ADD_SCORE',
         payload: action.payload,
     });
 

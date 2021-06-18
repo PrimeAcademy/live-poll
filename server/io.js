@@ -1,7 +1,7 @@
 const passport = require('passport');
-const http = require('http');
 const socketIo = require('socket.io');
 const sessionMiddleware = require('./modules/session-middleware');
+const pool = require('./modules/pool');
 
 // See https://github.com/socketio/socket.io/blob/master/examples/passport-example/index.js
 module.exports = (server) => {
@@ -34,8 +34,33 @@ module.exports = (server) => {
         console.log(`saving sid ${socket.id} in session ${session.id}`);
         session.socketId = socket.id;
         session.save(); */
-        socket.on('sendScore', (score) => {
-            console.log('got a score', score);
+
+        // Receive scores from participants
+        socket.on('sendScore', async (value) => {
+            const participant = socket.request.user;
+
+            console.log({ score: value, participant });
+
+            const score = {
+                value,
+                // add participantId to score
+                participantId: socket.user.id,
+                createdAt: new Date(),
+            };
+
+            // Send the score to the presenter
+            socket.to(participant.sessionId).emit('newScore', value);
+
+            // Save score to the database
+            await pool.query(`
+                INSERT INTO "score"
+                    ("participantId", "value", "createdAt")
+                VALUES ($1, $2, $3);
+            `, [
+                score.participantId,
+                score.value,
+                score.createdAt,
+            ]);
         });
     });
 

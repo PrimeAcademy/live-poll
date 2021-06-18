@@ -2,6 +2,7 @@ import Slider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
 
 const ScoreSlider = withStyles({
 /*     root: {
@@ -20,7 +21,7 @@ const ScoreSlider = withStyles({
 
 function ActiveSession() {
     const dispatch = useDispatch();
-    const score = useSelector((store) => store.score);
+    const score = useSelector((store) => store.scores[store.scores.length - 1]?.value);
 
     return (
         <>
@@ -29,7 +30,7 @@ function ActiveSession() {
             <div style={{ height: 400, marginLeft: 20 }}>
                 <ScoreSlider
                     orientation="vertical"
-                    value={score}
+                    value={score || 3}
                     onChange={(e, val) => dispatch({
                         type: 'SEND_SCORE',
                         payload: Number(val),
@@ -38,6 +39,13 @@ function ActiveSession() {
                     max={5}
                     step={0.1}
                 />
+            </div>
+
+            <div style={{
+                margin: 20,
+            }}
+            >
+                <ScoreHistory />
             </div>
         </>
     );

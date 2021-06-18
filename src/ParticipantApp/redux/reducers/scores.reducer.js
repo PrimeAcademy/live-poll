@@ -1,7 +1,10 @@
-export const score = (state = 3, action) => {
+export const scores = (state = [], action) => {
     switch (action.type) {
-    case 'SET_SCORE':
-        return action.payload;
+    case 'ADD_SCORE':
+        return [...state, {
+            value: action.payload,
+            createdAt: new Date(),
+        }];
     }
     return state;
 };
