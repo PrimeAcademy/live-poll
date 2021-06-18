@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import PersonIcon from '@material-ui/icons/Person';
 import ButtonLink from '../Util/ButtonLink';
 import MiniScoresChart from '../ScoresChart/MiniScoresChart';
 
@@ -81,10 +82,17 @@ function SessionList() {
                                 <TableCell style={{
                                     fontSize: 22,
                                     color: 'rgba(0, 0, 0, 0.65)',
-                                    paddingLeft: 12,
+                                    paddingLeft: 15,
                                 }}
                                 >
                                     {(Math.random() * 5).toFixed(1)}
+                                    <span
+                                        style={{
+                                            fontSize: 12,
+                                        }}
+                                    >
+                                        &nbsp;avg
+                                    </span>
                                 </TableCell>
 
                                 {/* Name */}
@@ -92,6 +100,16 @@ function SessionList() {
                                     <Link className={classes.stretchedLink} to={`/sessions/${sesh.id}`}>
                                         {sesh.name}
                                     </Link>
+                                </TableCell>
+
+                                <TableCell style={{ textAlign: 'right' }}>
+                                    {sesh.participants.length}
+                                    <PersonIcon style={{
+                                        verticalAlign: -5,
+                                        fontSize: 22,
+                                        marginLeft: 3,
+                                    }}
+                                    />
                                 </TableCell>
 
                                 {/* Date */}
@@ -113,8 +131,10 @@ function SessionList() {
                                         style={{
                                             color: 'var(--almost-black)',
                                             fontWeight: 'bold',
+                                            fontSize: 14,
                                             textDecoration: 'none',
                                             borderBottom: '1px solid var(--almost-black)',
+                                            paddingBottom: 1,
                                         }}
                                     >
                                         View Details

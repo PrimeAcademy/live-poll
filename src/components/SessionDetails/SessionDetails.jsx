@@ -10,6 +10,7 @@ import {
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -110,6 +111,26 @@ function SessionDetails() {
 
     return (
         <Container style={{ maxWidth: 980 }}>
+            <Link
+                to="/sessions"
+                style={{
+                    textDecoration: 'none',
+                    paddingLeft: 20,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    paddingBottom: 10,
+                    display: 'block',
+                    color: 'var(--almost-black)',
+                    marginTop: -15,
+                }}
+            >
+                <ArrowBackIosIcon style={{
+                    fontSize: 10,
+                    verticalAlign: 0,
+                }}
+                />
+                <span style={{ textDecoration: 'underline' }}>Back</span>
+            </Link>
             <div style={{ padding: '0 20px' }}>
                 <div style={{ display: 'inline-block' }}>
                     {isEditMode
