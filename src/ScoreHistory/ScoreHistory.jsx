@@ -3,21 +3,86 @@ import { Scatter, Line } from 'react-chartjs-2';
 import moment from 'moment';
 import C3Chart from 'react-c3js';
 import 'c3/c3.css';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
+import { flushSync } from 'react-dom';
 
+/*
+Thought:
+- grab currentScore from redux
+- save to a "buffer" (state var)
+    - When buffer is updated (or currentScore changes),
+        useEffect to setTimeout to flush buffer to graph after X seconds
+
+const newScore = useSelector(store => store.currentScore)
+const [dataBuffer, setDataBuffer] = useState([]);
+const [flushScoresTimer, setFlushScoresTime] = useState(null);
+const [data, setData] = useState([]);       // data to render
+
+useEffect(() => {
+    if (flushScoresTimer !== null) {
+        // if a time is already set, don't do it again
+        return;
+    }
+
+    // Flush data to chart after a timeout
+    let timer = setTimeout(() => {
+        setData(dataBuffer)
+        setDataBuffer([]);
+        setFlushScoresTimer(null);
+    }, 1000);
+
+    // Track the timer, so we don't duplicate
+    setFlushScoresTimer(timer);
+
+    // cleanup on umount
+    return () => clearTimeout(flushScoresTimer);
+}, [newScore])
+*/
 function ScoreHistory() {
     /* const scores = useSelector(
         (store) => store.scores,
     ); */
-    const lastScore = useSelector((store) => store.currentScore);
+    const newScore = useSelector((store) => store.currentScore);
+    const [scoresBuffer, setScoresBuffer] = useState([]);
+    const [flushTimer, setFlushTimer] = useState(null);
+
+    // https://github.com/facebook/react/issues/14010#issuecomment-433788147
+    const bufferRef = useRef(scoresBuffer);
+    bufferRef.current = scoresBuffer;
 
     useEffect(() => {
-        ApexCharts.exec('realtime', 'appendData', [{
-            data: [[lastScore.createdAt.getTime(), lastScore.value]],
-        }]);
-    }, [lastScore]);
+        console.log({ newScore, scoresBuffer });
+        // Add latest score to buffer
+        setScoresBuffer([
+            ...scoresBuffer,
+            [newScore.createdAt.getTime(), newScore.value],
+        ]);
+
+        // Set a flush timer, if there isn't one
+        if (flushTimer === null) {
+            // if a time is already set, don't do it again
+
+            // Flush data to chart after a timeout
+            console.log('setting timer');
+            const timer = setTimeout(() => {
+                console.log('updating', bufferRef.current);
+                ApexCharts.exec('realtime', 'updateSeries', [{
+                    data: bufferRef.current,
+                }]);
+
+                // Clear the buffer
+                // setScoresBuffer([]);
+
+                setFlushTimer(null);
+            }, 250);
+            setFlushTimer(timer);
+        }
+
+        // Cleanup on unmount
+        // return () => clearTimeout(flushTimer);
+    }, [newScore]);
 
     return (
         <Chart
