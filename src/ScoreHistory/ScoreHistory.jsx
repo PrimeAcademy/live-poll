@@ -40,49 +40,18 @@ useEffect(() => {
     return () => clearTimeout(flushScoresTimer);
 }, [newScore])
 */
-function ScoreHistory() {
-    /* const scores = useSelector(
-        (store) => store.scores,
-    ); */
-    const newScore = useSelector((store) => store.currentScore);
-    const [scoresBuffer, setScoresBuffer] = useState([]);
-    const [flushTimer, setFlushTimer] = useState(null);
+const GRAPH_UPDATE_BUFFER_MS = 500;
 
-    // https://github.com/facebook/react/issues/14010#issuecomment-433788147
-    const bufferRef = useRef(scoresBuffer);
-    bufferRef.current = scoresBuffer;
+function ScoreHistory() {
+    const scores = useSelector(
+        (store) => store.scores,
+    );
 
     useEffect(() => {
-        console.log({ newScore, scoresBuffer });
-        // Add latest score to buffer
-        setScoresBuffer([
-            ...scoresBuffer,
-            [newScore.createdAt.getTime(), newScore.value],
-        ]);
-
-        // Set a flush timer, if there isn't one
-        if (flushTimer === null) {
-            // if a time is already set, don't do it again
-
-            // Flush data to chart after a timeout
-            console.log('setting timer');
-            const timer = setTimeout(() => {
-                console.log('updating', bufferRef.current);
-                ApexCharts.exec('realtime', 'updateSeries', [{
-                    data: bufferRef.current,
-                }]);
-
-                // Clear the buffer
-                // setScoresBuffer([]);
-
-                setFlushTimer(null);
-            }, 250);
-            setFlushTimer(timer);
-        }
-
-        // Cleanup on unmount
-        // return () => clearTimeout(flushTimer);
-    }, [newScore]);
+        ApexCharts.exec('realtime', 'updateSeries', [{
+            data: scores.map((s) => [s.createdAt.getTime(), s.value]),
+        }]);
+    }, [scores]);
 
     return (
         <Chart

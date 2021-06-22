@@ -1,18 +1,16 @@
 export const scores = (state = [], action) => {
     switch (action.type) {
     case 'ADD_SCORE':
-        return [...state, {
-            value: action.payload,
-            createdAt: new Date(),
-        }];
+        return [...state, action.payload];
     }
     return state;
 };
 
-export const currentScore = (state = { value: 3, createdAt: new Date() }, action) => {
+// State of score, while sliding (before mouseup)
+export const scoreUncommitted = (state = 3, action) => {
     switch (action.type) {
-    case 'ADD_SCORE':
-        return { value: action.payload, createdAt: new Date() };
+    case 'ADD_SCORE_UNCOMMITTED':
+        return action.payload;
     }
     return state;
 };

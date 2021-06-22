@@ -4,7 +4,10 @@ function* sendScore(action) {
     // Save score to local state
     yield put({
         type: 'ADD_SCORE',
-        payload: action.payload,
+        payload: {
+            createdAt: new Date(),
+            value: action.payload,
+        },
     });
 
     // Grab the socket connection for this user

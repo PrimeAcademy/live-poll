@@ -21,7 +21,7 @@ const ScoreSlider = withStyles({
 
 function ActiveSession() {
     const dispatch = useDispatch();
-    const score = useSelector((store) => store.currentScore?.value);
+    const scoreUncommitted = useSelector((store) => store.scoreUncommitted);
 
     return (
         <>
@@ -30,8 +30,16 @@ function ActiveSession() {
             <div style={{ height: 400, marginLeft: 20 }}>
                 <ScoreSlider
                     orientation="vertical"
-                    value={score || 3}
+                    value={scoreUncommitted}
+                    // triggered while sliding
+                    // only tracked client-side
                     onChange={(e, val) => dispatch({
+                        type: 'ADD_SCORE_UNCOMMITTED',
+                        payload: Number(val),
+                    })}
+                    // only triggered while mouse-up
+                    // actually sends to server
+                    onChangeCommitted={(e, val) => dispatch({
                         type: 'SEND_SCORE',
                         payload: Number(val),
                     })}

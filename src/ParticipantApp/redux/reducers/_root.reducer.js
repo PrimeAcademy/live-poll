@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import errors from './errors.reducer';
 import user from './user.reducer';
 import toast from './toast.reducer';
-import { scores, currentScore } from './scores.reducer';
+import { scores, scoreUncommitted } from './scores.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
     toast,
     user, // will have an id and username if someone is logged in,
     scores,
-    currentScore,
+    scoreUncommitted,
 });
 
 export default rootReducer;
