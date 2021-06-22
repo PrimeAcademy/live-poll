@@ -31,7 +31,9 @@ const useStyles = makeStyles({
             position: 'relative',
             right: 400,
             marginTop: 88,
-            marginLeft: -85,
+            marginLeft: -92,
+            // animations were too fast
+            transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         },
 
         '& .PrivateValueLabel-circle-5': {
@@ -59,11 +61,12 @@ const useStyles = makeStyles({
         },
 
         '& .MuiSlider-rail': {
-            width: '100%',
+            width: 11,
             opacity: 1,
             // https://cssgradient.io/
-            // background: 'linear-gradient(0deg, rgba(185,123,130,1) 0%, rgba(181,185,139,1) 33%, rgba(153,180,144,1) 78%);',
-            background: '#202020',
+            background: 'linear-gradient(90deg, rgba(156,156,156,1) 0%, rgba(116,114,114,1) 23%, rgba(103,103,103,1) 100%)',
+            position: 'relative',
+            left: 'calc(50% + 11px)',
         },
 
         '& .MuiSlider-track': {
@@ -134,7 +137,7 @@ function ActiveSession() {
                 <ScoreSlider
                     orientation="vertical"
                     value={scoreUncommitted}
-                    valueLabelDisplay="on"
+                    valueLabelDisplay="auto"
                     // triggered while sliding
                     // only tracked client-side
                     onChange={(e, val) => dispatch({
