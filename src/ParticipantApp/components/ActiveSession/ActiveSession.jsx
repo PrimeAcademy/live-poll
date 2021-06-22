@@ -24,6 +24,26 @@ const useStyles = makeStyles({
 
         '& .MuiSlider-root': {
             width: '40%',
+            marginLeft: 70,
+        },
+
+        '& .MuiSlider-valueLabel': {
+            position: 'relative',
+            right: 400,
+            marginTop: 88,
+            marginLeft: -85,
+        },
+
+        '& .PrivateValueLabel-circle-5': {
+            transform: 'rotate(-135deg)',
+            fontWeight: 'bold',
+            fontSize: 28,
+            width: 62,
+            height: 62,
+        },
+
+        '& .PrivateValueLabel-label-6': {
+            transform: 'rotate(135deg)',
         },
 
         '& .MuiSlider-thumb': {
@@ -114,6 +134,7 @@ function ActiveSession() {
                 <ScoreSlider
                     orientation="vertical"
                     value={scoreUncommitted}
+                    valueLabelDisplay="on"
                     // triggered while sliding
                     // only tracked client-side
                     onChange={(e, val) => dispatch({
