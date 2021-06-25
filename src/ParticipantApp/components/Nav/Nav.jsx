@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Drawer } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 import Logo from '../../../PresenterApp/components/Logo/Logo';
 import '../../../PresenterApp/components/Nav/Nav.css';
-import MenuIcon from '@material-ui/icons/Menu';
 
 function Nav() {
     const [isMenuOpen, setMenuOpen] = useState(false);
