@@ -2,7 +2,8 @@ import {
     TextField,
     Button,
 } from '@material-ui/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
@@ -13,12 +14,31 @@ function ParticipantLogin() {
     const [joinCode, setJoinCode] = useState('');
 
     const user = useSelector((store) => store.user);
-    // todo: redirect if user
+
+    // Redirect if user is logged in
     if (user && user.id) {
         return (
             <Redirect to="/" />
         );
     }
+
+    // Set menu links
+    useEffect(() => {
+        dispatch({
+            type: 'SET_MENU_LINKS',
+            payload: [
+                {
+                    label: 'How it works',
+                    to: '/info',
+                },
+                {
+                    label: 'Create Session',
+                    // TODO: link to presenters website
+                    to: '/sessions/new',
+                },
+            ],
+        });
+    }, []);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -33,6 +53,7 @@ function ParticipantLogin() {
     return (
         <div style={{
             padding: '50px 80px',
+            marginTop: 60,
         }}
         >
             <div style={{ textAlign: 'center' }}>

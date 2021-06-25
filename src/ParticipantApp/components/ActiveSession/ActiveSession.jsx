@@ -36,7 +36,7 @@ const useStyles = makeStyles({
             height: 62,
         },
 
-        '& .MuiSlider-valueLabel > span >x span': {
+        '& .MuiSlider-valueLabel > span > span': {
             transform: 'rotate(135deg)',
         },
 
@@ -107,6 +107,23 @@ function ActiveSession() {
     const classes = useStyles();
     const sliderRef = useRef(null);
 
+    // Set menu links
+    useEffect(() => {
+        dispatch({
+            type: 'SET_MENU_LINKS',
+            payload: [
+                {
+                    label: 'How it works',
+                    to: '/info',
+                },
+                {
+                    label: 'Leave Session',
+                    to: '/logout',
+                },
+            ],
+        });
+    });
+
     // Change slider color as the value changes
     useEffect(() => {
         const track = sliderRef.current.querySelector('.MuiSlider-thumb');
@@ -176,7 +193,7 @@ function ActiveSession() {
                 <ScoreSlider
                     orientation="vertical"
                     value={scoreUncommitted}
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="on"
                     // triggered while sliding
                     // only tracked client-side
                     onChange={(e, val) => dispatch({

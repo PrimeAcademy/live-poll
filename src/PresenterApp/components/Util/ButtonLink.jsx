@@ -7,6 +7,7 @@ function ButtonLink({
     color = 'primary',
     variant = 'contained',
     children,
+    ...props
 }) {
     return (
         <Link to={to} style={{ textDecoration: 'none' }}>
@@ -14,6 +15,7 @@ function ButtonLink({
                 variant={variant}
                 color={color}
                 style={style}
+                {...props}
             >
                 {children}
             </Button>

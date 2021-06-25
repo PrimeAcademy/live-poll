@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Drawer } from '@material-ui/core';
+import { Drawer, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Logo from '../../../PresenterApp/components/Logo/Logo';
 import '../../../PresenterApp/components/Nav/Nav.css';
+import ButtonLink from '../../../PresenterApp/components/Util/ButtonLink';
+import { useSelector } from 'react-redux';
 
 function Nav() {
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const menuLinks = useSelector((store) => store.menuLinks);
 
     return (
         <div
@@ -63,12 +66,29 @@ function Nav() {
                 onClose={() => setMenuOpen(false)}
                 style={{
                 }}
-                /* PaperProps={{
-                    style: { marginTop: 70 },
-                }} */
+                PaperProps={{
+                    style: {
+                        marginTop: 70,
+                        background: '#dbdbdb',
+                        padding: '40px 40px 20px 40px',
+                        textAlign: 'center',
+                    },
+                }}
             >
-                <button>How it works</button>
-                <button>Create a Session</button>
+                {menuLinks.map(({ label, to }) => (
+                    <ButtonLink
+                        variant="contained"
+                        color="primary"
+                        style={{
+                            minWidth: 210,
+                            margin: '0 auto 20px auto',
+                        }}
+                        to={to}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        {label}
+                    </ButtonLink>
+                ))}
             </Drawer>
         </div>
     );
