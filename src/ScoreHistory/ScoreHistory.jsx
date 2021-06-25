@@ -17,6 +17,7 @@ function ScoreHistory() {
     return (
         <Chart
             type="line"
+            height="100%"
             options={{
                 chart: {
                     id: 'realtime',
@@ -27,7 +28,6 @@ function ScoreHistory() {
                             speed: 800,
                         },
                     },
-                    height: 350,
                     type: 'line',
                     toolbar: {
                         show: false,

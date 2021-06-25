@@ -13,6 +13,7 @@ function Nav() {
             className="nav"
             style={{
                 padding: '10px 0',
+                margin: 0,
             }}
         >
             <div style={{ textAlign: 'center', width: '100%', marginLeft: 30 }}>

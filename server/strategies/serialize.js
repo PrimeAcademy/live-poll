@@ -30,6 +30,11 @@ passport.deserializeUser(async ({ id, type }, done) => {
             delete user.socket;
         }
 
+        // Remove password
+        if (user.password) {
+            delete user.password;
+        }
+
         done(null, user);
     } catch (err) {
         console.error('deserializeUser error', err);
@@ -49,11 +54,28 @@ async function fetchParticipant(id) {
     const { rows: users } = await pool.query(`
         SELECT 
             participant.*,
-            to_json("session") as "session"
+            to_json("session") as "session",
+            to_json("user") as "presenter"
         FROM participant
         JOIN "session" ON "session".id = participant."sessionId"
+        JOIN "user" ON "user".id = "session"."presenterId"
         WHERE participant.id = $1;
     `, [id]);
 
-    return users.length ? users[0] : null;
+    if (!users.length) {
+        return null;
+    }
+
+    const user = users[0];
+
+    console.log(user);
+
+    if (user.presenter) {
+        delete user.presenter.password;
+
+        user.session.presenter = user.presenter;
+        delete user.presenter;
+    }
+
+    return user;
 }
