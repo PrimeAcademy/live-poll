@@ -7,18 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
 
 const ScoreSlider = withStyles({
-/*     root: {
-        width: 50,
-    },
-    rail: {
-        '&$vertical': {
-            width: 50,
-        },
-    },
-    track: {
-        background: 'none',
-        borderTop: '20px solid grey',
-    }, */
 })(Slider);
 
 const useStyles = makeStyles({
@@ -91,7 +79,6 @@ function shadeColor(color, percent) {
     let R = parseInt(color.substring(0, 2), 16);
     let G = parseInt(color.substring(2, 4), 16);
     let B = parseInt(color.substring(4, 6), 16);
-    console.log({ R, G, B });
 
     R = parseInt(R * (100 + percent) / 100);
     G = parseInt(G * (100 + percent) / 100);
@@ -116,13 +103,11 @@ function ActiveSession() {
 
     useEffect(() => {
         const track = sliderRef.current.querySelector('.MuiSlider-thumb');
-        console.log(track);
 
         const lowestColor = 'b97b82';
         const highestColor = '99b490';
 
         const color = interpolateColor(lowestColor, highestColor, scoreUncommitted / 5);
-        console.log({ color });
         track.style.background = `
             linear-gradient(
                 0deg, 
@@ -134,7 +119,10 @@ function ActiveSession() {
 
     return (
         <>
-            <h1>Active Session</h1>
+            {/* Session title and info */}
+            <div>
+                <h1>Active Session</h1>
+            </div>
 
             <div id="slider" ref={sliderRef} style={{ height: 400, marginLeft: 20 }} className={classes.slider}>
                 <ScoreSlider

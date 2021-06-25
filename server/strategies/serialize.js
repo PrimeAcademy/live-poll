@@ -16,25 +16,44 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async ({ id, type }, done) => {
     try {
-        // Select which table to lookup our user in
-        const userTable = {
-            presenter: 'user',
-            participant: 'participant',
-        }[type];
-
-        if (!userTable) {
-            throw new Error(`Invalid user type: ${type}`);
+        let user;
+        if (type === 'presenter') {
+            user = await fetchPresenter(id);
+        } else if (type === 'participant') {
+            user = await fetchParticipant(id);
+        } else {
+            throw new Error(`Invalid user type "${type}"`);
         }
 
-        // Lookup user by id
-        const { rows: users } = await pool.query(`
-            SELECT * FROM "${userTable}" WHERE id = $1
-        `, [id]);
+        // Remove socket.io session object
+        if (user.socket) {
+            delete user.socket;
+        }
 
-        const user = users.length ? users[0] : null;
         done(null, user);
     } catch (err) {
         console.error('deserializeUser error', err);
         done(err, null);
     }
 });
+
+async function fetchPresenter(id) {
+    const { rows: users } = await pool.query(`
+        SELECT * FROM "user" WHERE id = $1
+    `, [id]);
+
+    return users.length ? users[0] : null;
+}
+
+async function fetchParticipant(id) {
+    const { rows: users } = await pool.query(`
+        SELECT 
+            participant.*,
+            to_json("session") as "session"
+        FROM participant
+        JOIN "session" ON "session".id = participant."sessionId"
+        WHERE participant.id = $1;
+    `, [id]);
+
+    return users.length ? users[0] : null;
+}
