@@ -31,6 +31,6 @@ CREATE TABLE "participant" (
 CREATE TABLE "score" (
     "id" SERIAL PRIMARY KEY,
     "participantId" INT REFERENCES "participant" NOT NULL,
-    "value" INT NOT NULL,
+    "value" FLOAT NOT NULL,
     "createdAt" TIMESTAMP NOT NULL
 )

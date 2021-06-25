@@ -14,3 +14,13 @@ The LivePoll app allows instructors to gather instant feedback from students dur
 - [Scope Document](https://docs.google.com/document/d/1fitdL8rIv16WKjw5RVkR6xVECxv8iARVs9v7WnnwYeI/edit#)
 - [Wireframes](https://www.figma.com/file/8rij4EduSSh9dViPmKI6Lh/LivePoll-Wireframes)
 - [DB Diagram](https://dbdesigner.page.link/yNuTmh2N756NvpZW6)
+
+# Setup
+
+Two app, need `/etc/hosts` changes:
+
+```
+127.0.0.1       presenter.livepoll.local
+127.0.0.1       participant.livepoll.local
+127.0.0.1       livepoll.local
+```

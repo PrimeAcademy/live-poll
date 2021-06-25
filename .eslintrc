@@ -44,6 +44,8 @@
         "import/prefer-default-export": "off",
         "default-case": "off",
         "no-case-declarations": "off",
-        "react/jsx-one-expression-per-line": "off"
+        "react/jsx-one-expression-per-line": "off",
+        "no-use-before-define": "off",
+        "no-param-reassign": "off"
     }
 }

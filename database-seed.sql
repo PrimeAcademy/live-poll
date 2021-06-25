@@ -21,7 +21,7 @@ insert into "user" (username, "displayName", "password") values ('abrounckeri', 
 insert into "user" (username, "displayName", "password") values ('ewingarj', 'Emlynne Wingar', 'ho76l89k');
 
 -- https://www.mockaroo.com/6defcc50
-insert into "session" ("presenterId", "name", "joinCode", "createdAt", "endedAt") values (2, 'Progressive grid-enabled model', 'c01nf8c4', '2020-08-04 23:20:32', '2020-10-17 23:54:18');
+insert into "session" ("presenterId", "name", "joinCode", "createdAt", "endedAt") values (2, 'Progressive grid-enabled model', 'ABC', '2020-08-04 23:20:32', '2020-10-17 23:54:18');
 insert into "session" ("presenterId", "name", "joinCode", "createdAt", "endedAt") values (2, 'Organized attitude-oriented open system', 'e09hi1f2', '2020-10-19 22:11:32', '2020-10-27 07:17:44');
 insert into "session" ("presenterId", "name", "joinCode", "createdAt", "endedAt") values (1, 'Mandatory demand-driven time-frame', 'z88et1x9', '2020-09-13 06:03:33', '2021-02-26 23:11:47');
 insert into "session" ("presenterId", "name", "joinCode", "createdAt", "endedAt") values (1, 'Robust disintermediate strategy', 'p33dr8q5', '2021-01-21 21:16:25', '2020-10-11 08:17:09');
