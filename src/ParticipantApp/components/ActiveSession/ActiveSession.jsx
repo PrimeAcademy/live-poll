@@ -1,11 +1,17 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable radix */
 import Slider from '@material-ui/core/Slider';
-import { withStyles, makeStyles } from '@material-ui/core';
-import { useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import {
+    withStyles, makeStyles,
+    Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+    Button,
+} from '@material-ui/core';
+
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
+import ButtonLink from '../../../PresenterApp/components/Util/ButtonLink';
 
 const ScoreSlider = withStyles({
 })(Slider);
@@ -107,6 +113,8 @@ function ActiveSession() {
     const classes = useStyles();
     const sliderRef = useRef(null);
 
+    const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+
     // Set menu links
     useEffect(() => {
         dispatch({
@@ -118,7 +126,7 @@ function ActiveSession() {
                 },
                 {
                     label: 'Leave Session',
-                    to: '/logout',
+                    onClick: () => setShowConfirmLeave(true),
                 },
             ],
         });
@@ -219,6 +227,36 @@ function ActiveSession() {
             >
                 <ScoreHistory />
             </div>
+
+            <Dialog
+                open={showConfirmLeave}
+                onClose={() => setShowConfirmLeave(false)}
+            >
+                <DialogTitle>Leave Session</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to leave this session?
+                        You will not be able to re-join.
+                    </DialogContentText>
+                    <DialogActions>
+                        <Button
+                            color="default"
+                            variant="contained"
+                            onClick={() => setShowConfirmLeave(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <ButtonLink
+                            to="/logout"
+                            color="secondary"
+                            variant="contained"
+                            onClick={() => setShowConfirmLeave(false)}
+                        >
+                            Leave Session
+                        </ButtonLink>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

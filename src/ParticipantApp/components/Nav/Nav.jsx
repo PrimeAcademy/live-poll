@@ -75,7 +75,7 @@ function Nav() {
                     },
                 }}
             >
-                {menuLinks.map(({ label, to }) => (
+                {menuLinks.map(({ label, to, onClick }) => (
                     <ButtonLink
                         variant="contained"
                         color="primary"
@@ -84,7 +84,10 @@ function Nav() {
                             margin: '0 auto 20px auto',
                         }}
                         to={to}
-                        onClick={() => setMenuOpen(false)}
+                        onClick={() => {
+                            setMenuOpen(false);
+                            onClick && onClick();
+                        }}
                     >
                         {label}
                     </ButtonLink>

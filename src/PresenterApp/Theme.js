@@ -23,6 +23,11 @@ const theme = createMuiTheme({
                 fontWeight: 'bold',
                 textTransform: 'initial',
                 fontSize: 16,
+            },
+            containedPrimary: {
+                textShadow: '1px 1px 5px rgba(0, 0, 0, 0.5)',
+            },
+            containedSecondary: {
                 textShadow: '1px 1px 5px rgba(0, 0, 0, 0.5)',
             },
             outlined: {
