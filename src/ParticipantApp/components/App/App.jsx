@@ -6,6 +6,7 @@ import {
 import ActiveSession from '../ActiveSession/ActiveSession';
 import ParticipantLogin from '../ParticipantLogin/ParticipantLogin';
 import Logout from '../Logout/Logout';
+import Nav from '../Nav/Nav';
 
 function App() {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ function App() {
 
     return (
         <Router>
+            <Nav />
             <Switch>
                 {/* <Redirect exact from="/" to="/login" /> */}
 
