@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     Route, HashRouter as Router, Switch, Redirect,
 } from 'react-router-dom';
-import ProtectedRoute from '../../../PresenterApp/components/ProtectedRoute/ProtectedRoute';
 import ActiveSession from '../ActiveSession/ActiveSession';
 import ParticipantLogin from '../ParticipantLogin/ParticipantLogin';
 import Logout from '../Logout/Logout';

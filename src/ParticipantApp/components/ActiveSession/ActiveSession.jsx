@@ -1,6 +1,8 @@
+/* eslint-disable no-mixed-operators */
+/* eslint-disable radix */
 import Slider from '@material-ui/core/Slider';
 import { withStyles, makeStyles } from '@material-ui/core';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
 
@@ -80,6 +82,7 @@ function interpolateColor(c0, c1, f) {
     c0 = c0.match(/.{1,2}/g).map((oct) => parseInt(oct, 16) * (1 - f));
     c1 = c1.match(/.{1,2}/g).map((oct) => parseInt(oct, 16) * f);
     const ci = [0, 1, 2].map((i) => Math.min(Math.round(c0[i] + c1[i]), 255));
+    // eslint-disable-next-line no-bitwise
     return ci.reduce((a, v) => ((a << 8) + v), 0).toString(16).padStart(6, '0');
 }
 
@@ -98,9 +101,9 @@ function shadeColor(color, percent) {
     G = (G < 255) ? G : 255;
     B = (B < 255) ? B : 255;
 
-    const RR = ((R.toString(16).length == 1) ? `0${R.toString(16)}` : R.toString(16));
-    const GG = ((G.toString(16).length == 1) ? `0${G.toString(16)}` : G.toString(16));
-    const BB = ((B.toString(16).length == 1) ? `0${B.toString(16)}` : B.toString(16));
+    const RR = ((R.toString(16).length === 1) ? `0${R.toString(16)}` : R.toString(16));
+    const GG = ((G.toString(16).length === 1) ? `0${G.toString(16)}` : G.toString(16));
+    const BB = ((B.toString(16).length === 1) ? `0${B.toString(16)}` : B.toString(16));
 
     return `${RR}${GG}${BB}`;
 }
