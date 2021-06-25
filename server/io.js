@@ -24,27 +24,18 @@ module.exports = (server) => {
     });
 
     io.on('connect', (socket) => {
-        console.log(`new connection ${socket.id}`);
         socket.on('whoami', (cb) => {
             cb(socket.request.user ? socket.request.user.username : '');
         });
-
-        /// ??? what is this stuff?
-        /* const { session } = socket.request;
-        console.log(`saving sid ${socket.id} in session ${session.id}`);
-        session.socketId = socket.id;
-        session.save(); */
 
         // Receive scores from participants
         socket.on('sendScore', async (value) => {
             const participant = socket.request.user;
 
-            console.log({ score: value, participant });
-
             const score = {
                 value,
                 // add participantId to score
-                participantId: socket.user.id,
+                participantId: participant.id,
                 createdAt: new Date(),
             };
 
