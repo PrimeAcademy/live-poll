@@ -36,13 +36,24 @@ function ScoreHistory() {
                         enabled: false,
                     },
                 },
+                grid: {
+                    show: false,
+                },
+                tooltip: {
+                    x: {
+                        format: 'hh:mm',
+                    },
+                },
                 stroke: { curve: 'smooth' },
-                dataLabels: { enabled: false },
-                xaxis: { type: 'datetime' },
+                // dataLabels: { enabled: false },
+                xaxis: {
+                    type: 'datetime',
+                },
                 legend: { show: false },
             }}
             series={[{
                 // https://apexcharts.com/docs/series/
+                name: 'Score',
                 data: [],
             }]}
         />

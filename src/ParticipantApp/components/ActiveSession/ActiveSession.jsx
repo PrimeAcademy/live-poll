@@ -36,7 +36,7 @@ const useStyles = makeStyles({
             height: 62,
         },
 
-        '& .MuiSlider-valueLabel > span > span': {
+        '& .MuiSlider-valueLabel > span >x span': {
             transform: 'rotate(135deg)',
         },
 
@@ -49,7 +49,7 @@ const useStyles = makeStyles({
             borderRadius: 10,
 
             background: 'linear-gradient(0deg, rgba(107,107,107,1) 0%, rgba(154,154,154,1) 100%)',
-            border: '1px solid #949494',
+            border: '1px solid #434343',
         },
 
         '& .MuiSlider-rail': {
