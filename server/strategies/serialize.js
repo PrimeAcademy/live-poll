@@ -25,6 +25,10 @@ passport.deserializeUser(async ({ id, type }, done) => {
             throw new Error(`Invalid user type "${type}"`);
         }
 
+        if (!user) {
+            return done(null, null);
+        }
+
         // Remove socket.io session object
         if (user.socket) {
             delete user.socket;

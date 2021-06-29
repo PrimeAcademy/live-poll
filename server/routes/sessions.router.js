@@ -33,7 +33,14 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
         FROM session
         JOIN "user"
             ON "user".id = "session"."presenterId"
-        LEFT JOIN "participant"
+        LEFT JOIN (
+            SELECT 
+                participant.*,
+                array_agg(to_json(score)) as "scores"
+            FROM "participant"
+            JOIN "score" ON "score"."participantId" = participant.id
+            GROUP BY "participant".id
+        ) as "participant"
             ON "participant"."sessionId" = "session".id
         WHERE "session"."presenterId" = $1
         AND "session".id = $2

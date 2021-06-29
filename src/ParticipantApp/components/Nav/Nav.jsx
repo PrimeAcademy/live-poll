@@ -75,8 +75,9 @@ function Nav() {
                     },
                 }}
             >
-                {menuLinks.map(({ label, to, onClick }) => (
+                {menuLinks.map(({ label, to, onClick }, i) => (
                     <ButtonLink
+                        key={i}
                         variant="contained"
                         color="primary"
                         style={{
