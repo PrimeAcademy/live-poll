@@ -20,7 +20,7 @@ import {
 } from 'react-router-dom';
 import moment from 'moment';
 import ButtonLink from '../Util/ButtonLink';
-import ScoresChart from '../ScoresChart/ScoresChart';
+import ScoresChart from '../../../ScoreChart/ScoreChart';
 import ParticipantRow from './ParticipantRow';
 
 const useStyles = makeStyles({
@@ -77,7 +77,16 @@ function SessionDetails() {
 
     // https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
     const copyJoinCode = (evt) => {
-        navigator.clipboard.writeText(session.joinCode);
+        try {
+            navigator.clipboard.writeText(session.joinCode);
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Failed to copy to clipboard'),
+            });
+            return;
+        }
 
         dispatch({
             type: 'SET_TOAST',
@@ -288,7 +297,7 @@ function SessionDetails() {
                 }}
                 >
                     {session.participants.length
-                        ? <ScoresChart />
+                        ? <ScoresChart participants={session.participants} />
                         : (
                             <div style={{
                                 height: '100%',
