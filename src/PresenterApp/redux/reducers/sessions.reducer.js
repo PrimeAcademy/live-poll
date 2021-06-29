@@ -13,6 +13,14 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
     switch (action.type) {
     case 'SET_SESSION_DETAILS':
         return action.payload;
+    case 'ADD_SCORE':
+        return {
+            ...state,
+            participants: state.participants.map((p) => ({
+                ...p,
+                scores: p.scores.concat(action.payload),
+            })),
+        };
     }
 
     return state;

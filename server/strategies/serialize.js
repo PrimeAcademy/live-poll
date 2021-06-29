@@ -39,6 +39,8 @@ passport.deserializeUser(async ({ id, type }, done) => {
             delete user.password;
         }
 
+        user.type = type;
+
         done(null, user);
     } catch (err) {
         console.error('deserializeUser error', err);

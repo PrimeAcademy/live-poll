@@ -1,5 +1,6 @@
 const passport = require('passport');
 const socketIo = require('socket.io');
+const { Score } = require('@material-ui/icons');
 const sessionMiddleware = require('./modules/session-middleware');
 const pool = require('./modules/pool');
 
@@ -23,10 +24,28 @@ module.exports = (server) => {
         }
     });
 
-    io.on('connect', (socket) => {
+    io.on('connect', async (socket) => {
         socket.on('whoami', (cb) => {
             cb(socket.request.user ? socket.request.user.username : '');
         });
+
+        const { user } = socket.request;
+        if (user.type === 'presenter') {
+            // Join presenter rooms
+            const { rows: sessions } = await pool.query(`
+                SELECT session.id
+                FROM session
+                JOIN "user"
+                    ON "user".id = "session"."presenterId"
+                WHERE "session"."presenterId" = $1
+            `, [
+                user.id,
+            ]);
+
+            for (const sesh of sessions) {
+                socket.join(sesh.id);
+            }
+        }
 
         // Receive scores from participants
         socket.on('sendScore', async (value) => {
@@ -40,7 +59,7 @@ module.exports = (server) => {
             };
 
             // Send the score to the presenter
-            socket.to(participant.sessionId).emit('newScore', value);
+            socket.to(participant.sessionId).emit('newScore', score);
 
             // Save score to the database
             await pool.query(`
@@ -53,6 +72,8 @@ module.exports = (server) => {
                 score.createdAt,
             ]);
         });
+
+        // socket.join(socket.request.user.sessionId);
     });
 
     return io;
