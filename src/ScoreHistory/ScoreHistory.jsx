@@ -17,6 +17,7 @@ function ScoreHistory() {
     return (
         <Chart
             type="line"
+            height="100%"
             options={{
                 chart: {
                     id: 'realtime',
@@ -27,7 +28,6 @@ function ScoreHistory() {
                             speed: 800,
                         },
                     },
-                    height: 350,
                     type: 'line',
                     toolbar: {
                         show: false,
@@ -36,13 +36,24 @@ function ScoreHistory() {
                         enabled: false,
                     },
                 },
+                grid: {
+                    show: false,
+                },
+                tooltip: {
+                    x: {
+                        format: 'hh:mm',
+                    },
+                },
                 stroke: { curve: 'smooth' },
-                dataLabels: { enabled: false },
-                xaxis: { type: 'datetime' },
+                // dataLabels: { enabled: false },
+                xaxis: {
+                    type: 'datetime',
+                },
                 legend: { show: false },
             }}
             series={[{
                 // https://apexcharts.com/docs/series/
+                name: 'Score',
                 data: [],
             }]}
         />

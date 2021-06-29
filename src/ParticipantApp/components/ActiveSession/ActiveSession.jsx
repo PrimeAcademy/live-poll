@@ -1,24 +1,19 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable radix */
 import Slider from '@material-ui/core/Slider';
-import { withStyles, makeStyles } from '@material-ui/core';
-import { useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import {
+    withStyles, makeStyles,
+    Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+    Button,
+} from '@material-ui/core';
+
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
+import ButtonLink from '../../../PresenterApp/components/Util/ButtonLink';
 
 const ScoreSlider = withStyles({
-/*     root: {
-        width: 50,
-    },
-    rail: {
-        '&$vertical': {
-            width: 50,
-        },
-    },
-    track: {
-        background: 'none',
-        borderTop: '20px solid grey',
-    }, */
 })(Slider);
 
 const useStyles = makeStyles({
@@ -26,7 +21,8 @@ const useStyles = makeStyles({
 
         '& .MuiSlider-root': {
             width: '40%',
-            marginLeft: 70,
+            display: 'block',
+            margin: '0 auto',
         },
 
         '& .MuiSlider-valueLabel': {
@@ -38,7 +34,7 @@ const useStyles = makeStyles({
             transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         },
 
-        '& .PrivateValueLabel-circle-5': {
+        '& .MuiSlider-valueLabel > span': {
             transform: 'rotate(-135deg)',
             fontWeight: 'bold',
             fontSize: 28,
@@ -46,7 +42,7 @@ const useStyles = makeStyles({
             height: 62,
         },
 
-        '& .PrivateValueLabel-label-6': {
+        '& .MuiSlider-valueLabel > span > span': {
             transform: 'rotate(135deg)',
         },
 
@@ -59,14 +55,14 @@ const useStyles = makeStyles({
             borderRadius: 10,
 
             background: 'linear-gradient(0deg, rgba(107,107,107,1) 0%, rgba(154,154,154,1) 100%)',
-            border: '1px solid #949494',
+            border: '1px solid #434343',
         },
 
         '& .MuiSlider-rail': {
             width: 11,
             opacity: 1,
             // https://cssgradient.io/
-            background: 'linear-gradient(90deg, rgba(156,156,156,1) 0%, rgba(116,114,114,1) 23%, rgba(103,103,103,1) 100%)',
+            background: 'linear-gradient(90deg, rgb(90 90 90) 0%, rgb(188 179 179) 23%, rgb(104 102 102) 100%)',
             position: 'relative',
             left: 'calc(50% + 11px)',
         },
@@ -91,7 +87,6 @@ function shadeColor(color, percent) {
     let R = parseInt(color.substring(0, 2), 16);
     let G = parseInt(color.substring(2, 4), 16);
     let B = parseInt(color.substring(4, 6), 16);
-    console.log({ R, G, B });
 
     R = parseInt(R * (100 + percent) / 100);
     G = parseInt(G * (100 + percent) / 100);
@@ -110,19 +105,42 @@ function shadeColor(color, percent) {
 
 function ActiveSession() {
     const dispatch = useDispatch();
+    // Track the current value of slider (before it's released)
     const scoreUncommitted = useSelector((store) => store.scoreUncommitted);
+
+    const session = useSelector((store) => store.user.session);
+
     const classes = useStyles();
     const sliderRef = useRef(null);
 
+    const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+
+    // Set menu links
+    useEffect(() => {
+        dispatch({
+            type: 'SET_MENU_LINKS',
+            payload: [
+                {
+                    label: 'How it works',
+                    to: '/info',
+                },
+                {
+                    label: 'Leave Session',
+                    onClick: () => setShowConfirmLeave(true),
+                },
+            ],
+        });
+    });
+
+    // Change slider color as the value changes
     useEffect(() => {
         const track = sliderRef.current.querySelector('.MuiSlider-thumb');
-        console.log(track);
+        const label = sliderRef.current.querySelector('.MuiSlider-valueLabel');
 
-        const lowestColor = 'b97b82';
-        const highestColor = '99b490';
+        const lowestColor = 'b52132';
+        const highestColor = '659157';
 
         const color = interpolateColor(lowestColor, highestColor, scoreUncommitted / 5);
-        console.log({ color });
         track.style.background = `
             linear-gradient(
                 0deg, 
@@ -130,17 +148,60 @@ function ActiveSession() {
                 #${shadeColor(color, 20)} 78%
             )
         `;
+        label.style.color = `#${shadeColor(color, 20)}`;
     }, [scoreUncommitted]);
 
     return (
         <>
-            <h1>Active Session</h1>
+            <div style={{
+                padding: 14,
+                borderBottom: '1px solid var(--almost-black)',
+                background: '#3f3f3f',
+                color: 'white',
+            }}
+            >
+                {/* Session title and info */}
+                <h1 style={{
+                    margin: '0 0 5px 0',
+                    fontSize: 22,
+                }}
+                >
+                    {session.name}
+                </h1>
+                <div style={{
+                    fontSize: 13,
+                }}
+                >
+                    <div>Presented by: {session.presenter.displayName}</div>
+                    <div>
+                        {moment(session.createdAt).format(
+                            'MMM D hh:mm:a',
+                        )}
+                        {session.endedAt && ` - ${
+                            moment(session.endedAt).format(
+                                'hh:mm:a',
+                            )}
+                        `}
+                    </div>
+                </div>
+            </div>
 
-            <div id="slider" ref={sliderRef} style={{ height: 400, marginLeft: 20 }} className={classes.slider}>
+            {/* Score slider */}
+            <div
+                id="slider"
+                ref={sliderRef}
+                style={{
+                    // height: 400,
+                    padding: '30px 0',
+                    background: '#575757',
+                    height: 'calc(70% - 45px)',
+                }}
+                className={classes.slider}
+            >
                 <ScoreSlider
                     orientation="vertical"
                     value={scoreUncommitted}
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="on"
                     // triggered while sliding
                     // only tracked client-side
                     onChange={(e, val) => dispatch({
@@ -160,11 +221,42 @@ function ActiveSession() {
             </div>
 
             <div style={{
-                margin: 20,
+                background: '#3f3f3f',
+                height: 'calc(20% - 45px)',
             }}
             >
                 <ScoreHistory />
             </div>
+
+            <Dialog
+                open={showConfirmLeave}
+                onClose={() => setShowConfirmLeave(false)}
+            >
+                <DialogTitle>Leave Session</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to leave this session?
+                        You will not be able to re-join.
+                    </DialogContentText>
+                    <DialogActions>
+                        <Button
+                            color="default"
+                            variant="contained"
+                            onClick={() => setShowConfirmLeave(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <ButtonLink
+                            to="/logout"
+                            color="secondary"
+                            variant="contained"
+                            onClick={() => setShowConfirmLeave(false)}
+                        >
+                            Leave Session
+                        </ButtonLink>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

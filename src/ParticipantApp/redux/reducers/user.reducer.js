@@ -1,4 +1,4 @@
-const userReducer = (state = {}, action) => {
+const userReducer = (state = { session: { presenter: {} } }, action) => {
     switch (action.type) {
     case 'SET_USER':
         return action.payload;
