@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Drawer, Button } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import { useSelector } from 'react-redux';
 import Logo from '../../../PresenterApp/components/Logo/Logo';
 import '../../../PresenterApp/components/Nav/Nav.css';
 import ButtonLink from '../../../PresenterApp/components/Util/ButtonLink';
-import { useSelector } from 'react-redux';
 
 function Nav() {
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -86,7 +86,9 @@ function Nav() {
                         to={to}
                         onClick={() => {
                             setMenuOpen(false);
-                            onClick && onClick();
+                            if (onClick) {
+                                onClick();
+                            }
                         }}
                     >
                         {label}
