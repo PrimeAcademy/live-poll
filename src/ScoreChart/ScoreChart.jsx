@@ -1,24 +1,24 @@
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 
 function ScoreChart({
     participants,
 }) {
-    useEffect(() => {
-        const series = participants.map((part) => ({
-            name: part.displayName,
-            data: part.scores.map((s) => [s.createdAt.getTime(), s.value]),
-        }));
+    const getSeries = () => participants.map((part) => ({
+        name: part.displayName,
+        data: part.scores.map((s) => [s.createdAt.getTime(), s.value]),
+    }));
 
-        ApexCharts.exec('realtime', 'updateSeries', series);
+    useEffect(() => {
+        ApexCharts.exec('realtime', 'updateSeries', getSeries());
     }, [participants]);
 
     return (
         <Chart
             type="line"
             height="100%"
+            // https://apexcharts.com/docs/options/
             options={{
                 chart: {
                     id: 'realtime',
@@ -44,19 +44,27 @@ function ScoreChart({
                     x: {
                         format: 'hh:mm',
                     },
+                    y: {
+                        formatter: (val) => val.toFixed(1),
+                    },
                 },
                 stroke: { curve: 'smooth' },
                 // dataLabels: { enabled: false },
                 xaxis: {
                     type: 'datetime',
+                    labels: {
+                        datetimeUTC: false,
+                        format: 'hh:mm',
+                    },
+                },
+                yaxis: {
+                    labels: {
+                        formatter: (val) => val.toFixed(1),
+                    },
                 },
                 legend: { show: false },
             }}
-            series={[{
-                // https://apexcharts.com/docs/series/
-                name: 'Score',
-                data: [],
-            }]}
+            series={getSeries()}
         />
     );
 }
