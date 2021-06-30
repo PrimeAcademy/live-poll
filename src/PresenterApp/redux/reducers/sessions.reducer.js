@@ -45,6 +45,9 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
     return state;
 };
 
+// TODO: I think this would make more sense as a "snapshot" average
+// ie. take latest score from user participant, and avg
+
 // Should we move this to the server?
 // just so there's less load on the client...?
 function allAverageScores(participants) {
@@ -54,17 +57,23 @@ function allAverageScores(participants) {
         .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
 
     const avgScores = [];
-    let lastSum = 0;
+    const lastScoreByParticipant = {};
 
     for (const score of allScores) {
-        lastSum += score.value;
+        // Track latest scores for each participant
+        lastScoreByParticipant[score.participantId]
+            || (lastScoreByParticipant[score.participantId] = {});
 
-        const value = avgScores.length
-            ? lastSum / (avgScores.length + 1)
-            : score.value;
+        lastScoreByParticipant[score.participantId] = score.value;
+
+        // Save the average of all the participants latest scores
+        const sumOfLatestScores = Object.values(lastScoreByParticipant)
+            .reduce((sum, val) => sum + val, 0);
+        const avgLatestScore = sumOfLatestScores / Object.values(lastScoreByParticipant).length;
+
         avgScores.push({
+            value: avgLatestScore,
             createdAt: score.createdAt,
-            value,
         });
     }
 
