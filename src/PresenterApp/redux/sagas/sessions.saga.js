@@ -22,6 +22,13 @@ function* fetchSessionDetails(action) {
         console.log(action);
         const { data } = yield axios.get(`/api/sessions/${action.payload}`);
 
+        // Convert score timestamps to dates
+        for (const part of data.participants) {
+            for (const score of part.scores) {
+                score.createdAt = new Date(score.createdAt);
+            }
+        }
+
         yield put({
             type: 'SET_SESSION_DETAILS',
             payload: data,

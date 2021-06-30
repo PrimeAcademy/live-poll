@@ -20,7 +20,7 @@ import {
 } from 'react-router-dom';
 import moment from 'moment';
 import ButtonLink from '../Util/ButtonLink';
-import ScoresChart from '../ScoresChart/ScoresChart';
+import ScoresChart from '../../../ScoreChart/ScoreChart';
 import ParticipantRow from './ParticipantRow';
 
 const useStyles = makeStyles({
@@ -54,6 +54,7 @@ function SessionDetails() {
     const history = useHistory();
     const session = useSelector((store) => store.sessionDetails);
     const editSession = useSelector((store) => store.editSession);
+    const socket = useSelector((store) => store.user.socket);
 
     // Edit mode uses `/sessions/:id/edit` url
     const location = useLocation();
@@ -68,6 +69,7 @@ function SessionDetails() {
         }
     }, [isEditMode]);
 
+    // Fetch session info on load
     useEffect(() => {
         dispatch({
             type: 'FETCH_SESSION_DETAILS',
@@ -75,9 +77,30 @@ function SessionDetails() {
         });
     }, [params.id]);
 
+    // Listen for updates to scores (socket.io)
+    useEffect(() => {
+        socket.on('newScore', (score) => {
+            score.createdAt = new Date(score.createdAt);
+
+            dispatch({
+                type: 'ADD_SCORE',
+                payload: score,
+            });
+        });
+    }, []);
+
     // https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
     const copyJoinCode = (evt) => {
-        navigator.clipboard.writeText(session.joinCode);
+        try {
+            navigator.clipboard.writeText(session.joinCode);
+        } catch (err) {
+            console.error(err);
+            dispatch({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Failed to copy to clipboard'),
+            });
+            return;
+        }
 
         dispatch({
             type: 'SET_TOAST',
@@ -288,7 +311,16 @@ function SessionDetails() {
                 }}
                 >
                     {session.participants.length
-                        ? <ScoresChart />
+                        ? (
+                            <ScoresChart participants={[
+                                ...session.participants,
+                                {
+                                    displayName: 'Average',
+                                    scores: session.averageScores,
+                                },
+                            ]}
+                            />
+                        )
                         : (
                             <div style={{
                                 height: '100%',

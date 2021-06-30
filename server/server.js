@@ -16,6 +16,7 @@ require('./strategies/participant.strategy');
 // Route includes
 const userRouter = require('./routes/user.router');
 const sessionsRouter = require('./routes/sessions.router');
+const scoresRouter = require('./routes/scores.router');
 
 const participantRouter = require('./routes/participant.router');
 
@@ -36,6 +37,7 @@ app.use(passport.session());
 /* Routes */
 app.use('/api/user', userRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/scores', scoresRouter);
 
 app.use('/api/participants', participantRouter);
 

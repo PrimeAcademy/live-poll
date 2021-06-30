@@ -25,6 +25,10 @@ passport.deserializeUser(async ({ id, type }, done) => {
             throw new Error(`Invalid user type "${type}"`);
         }
 
+        if (!user) {
+            return done(null, null);
+        }
+
         // Remove socket.io session object
         if (user.socket) {
             delete user.socket;
@@ -34,6 +38,8 @@ passport.deserializeUser(async ({ id, type }, done) => {
         if (user.password) {
             delete user.password;
         }
+
+        user.type = type;
 
         done(null, user);
     } catch (err) {
@@ -67,8 +73,6 @@ async function fetchParticipant(id) {
     }
 
     const user = users[0];
-
-    console.log(user);
 
     if (user.presenter) {
         delete user.presenter.password;
