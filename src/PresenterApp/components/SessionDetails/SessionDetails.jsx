@@ -11,6 +11,7 @@ import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import io from 'socket.io-client';
 
 import PersonIcon from '@material-ui/icons/Person';
 import { useEffect, createRef } from 'react';
@@ -54,11 +55,53 @@ function SessionDetails() {
     const history = useHistory();
     const session = useSelector((store) => store.sessionDetails);
     const editSession = useSelector((store) => store.editSession);
-    const socket = useSelector((store) => store.user.socket);
 
     // Edit mode uses `/sessions/:id/edit` url
     const location = useLocation();
     const isEditMode = location.pathname.endsWith('/edit');
+
+    // Setup socket.io connection
+    useEffect(() => {
+        // eslint-disable-next-line no-shadow
+        const socket = io();
+
+        // Show error on connect timeout
+        const timeoutTimer = setTimeout(() => {
+            dispatch({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Timeout connecting to socket.io server'),
+            });
+        }, 2000);
+        socket.on('connect', () => clearTimeout(timeoutTimer));
+
+        // Listen for scores
+        socket.on('newScore', (score) => {
+            score.createdAt = new Date(score.createdAt);
+
+            dispatch({
+                type: 'ADD_SCORE',
+                payload: score,
+            });
+        });
+
+        // Listen for joined participants
+        socket.on('participantJoined', (participant) => {
+            const isAlreadyJoined = session.participants
+                .map((p) => p.id)
+                .includes(participant.id);
+            if (participant.sessionId === session.id && !isAlreadyJoined) {
+                dispatch({
+                    type: 'ADD_SESSION_PARTICIPANT',
+                    payload: {
+                        ...participant,
+                        scores: [],
+                    },
+                });
+            }
+        });
+
+        return () => socket.disconnect();
+    }, [session.id]);
 
     // Select name text in input, on switch to edit mode
     const nameInputRef = createRef();
@@ -76,18 +119,6 @@ function SessionDetails() {
             payload: params.id,
         });
     }, [params.id]);
-
-    // Listen for updates to scores (socket.io)
-    useEffect(() => {
-        socket.on('newScore', (score) => {
-            score.createdAt = new Date(score.createdAt);
-
-            dispatch({
-                type: 'ADD_SCORE',
-                payload: score,
-            });
-        });
-    }, []);
 
     // https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
     const copyJoinCode = (evt) => {

@@ -24,10 +24,6 @@ module.exports = (server) => {
     });
 
     io.on('connect', async (socket) => {
-        socket.on('whoami', (cb) => {
-            cb(socket.request.user ? socket.request.user.username : '');
-        });
-
         const { user } = socket.request;
         if (user.type === 'presenter') {
             // Join presenter rooms
@@ -41,24 +37,33 @@ module.exports = (server) => {
                 user.id,
             ]);
 
+            // TODO: I don't think this works with newly created room:
+            // we're already connected to socket.io, this code doesn't run
             for (const sesh of sessions) {
+                console.log(`${user.displayName} joining session ${sesh.id}`);
                 socket.join(sesh.id);
             }
         }
 
+        // Let the presenter now a participant has joined
+        console.log('connected', user.displayName);
+        console.log('connection count', io.engine.clientsCount);
+        if (user.type === 'participant') {
+            console.log('emit participantJoined for sesh', user.sessionId, user.displayName);
+            socket.to(user.sessionId).emit('participantJoined', user);
+        }
+
         // Receive scores from participants
         socket.on('sendScore', async (value) => {
-            const participant = socket.request.user;
-
             const score = {
                 value,
                 // add participantId to score
-                participantId: participant.id,
+                participantId: user.id,
                 createdAt: new Date(),
             };
 
             // Send the score to the presenter
-            socket.to(participant.sessionId).emit('newScore', score);
+            socket.to(user.sessionId).emit('newScore', score);
 
             // Save score to the database
             await pool.query(`
@@ -72,7 +77,10 @@ module.exports = (server) => {
             ]);
         });
 
-        // socket.join(socket.request.user.sessionId);
+        socket.on('disconnect', () => {
+            console.log('disconnect', user.displayName);
+            console.log('connection count', io.engine.clientsCount);
+        });
     });
 
     return io;
