@@ -12,25 +12,68 @@ export const sessionList = (state = [], action) => {
 export const sessionDetails = (state = { presenter: {}, participants: [] }, action) => {
     switch (action.type) {
     case 'SET_SESSION_DETAILS':
-        return action.payload;
+        return {
+            ...action.payload,
+            // Calculate total
+            averageScores: allAverageScores(action.payload.participants),
+            // Add average score to participant objet
+            participants: action.payload.participants.map((p) => ({
+                ...p,
+                averageScore: averageScore(p.scores),
+            })),
+        };
     case 'ADD_SCORE':
+        const participants = state.participants.map((p) => (
+            // If the new score is for this participant
+            // add it to the list of scores
+            p.id === action.payload.participantId
+                ? {
+                    ...p,
+                    scores: p.scores.concat(action.payload),
+                    averageScore: averageScore(p.scores.concat(action.payload)),
+                }
+                : p));
+
         return {
             ...state,
+            averageScores: allAverageScores(participants),
             // Loop through participants.
-            participants: state.participants.map((p) => (
-                // If the new score is for this participant
-                // add it to the list of scores
-                p.id === action.payload.participantId
-                    ? {
-                        ...p,
-                        scores: p.scores.concat(action.payload),
-                    }
-                    : p)),
+            participants,
         };
     }
 
     return state;
 };
+
+// Should we move this to the server?
+// just so there's less load on the client...?
+function allAverageScores(participants) {
+    // Join all scores into a single array, and sort by time
+    const allScores = participants
+        .reduce((scores, p) => scores.concat(p.scores), [])
+        .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+
+    const avgScores = [];
+    let lastSum = 0;
+
+    for (const score of allScores) {
+        lastSum += score.value;
+
+        const value = avgScores.length
+            ? lastSum / (avgScores.length + 1)
+            : score.value;
+        avgScores.push({
+            createdAt: score.createdAt,
+            value,
+        });
+    }
+
+    return avgScores;
+}
+
+function averageScore(scores) {
+    return scores.reduce((sum, score) => sum + score.value, 0) / scores.length;
+}
 
 export const editSession = (state = { presenter: {}, participants: [] }, action) => {
     switch (action.type) {

@@ -311,7 +311,16 @@ function SessionDetails() {
                 }}
                 >
                     {session.participants.length
-                        ? <ScoresChart participants={session.participants} />
+                        ? (
+                            <ScoresChart participants={[
+                                ...session.participants,
+                                {
+                                    displayName: 'Average',
+                                    scores: session.averageScores,
+                                },
+                            ]}
+                            />
+                        )
                         : (
                             <div style={{
                                 height: '100%',

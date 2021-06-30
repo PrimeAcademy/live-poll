@@ -36,7 +36,7 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
         LEFT JOIN (
             SELECT 
                 participant.*,
-                array_agg(to_json(score)) as "scores"
+                array_agg(to_json(score) ORDER BY "createdAt" ASC) as "scores"
             FROM "participant"
             JOIN "score" ON "score"."participantId" = participant.id
             GROUP BY "participant".id
