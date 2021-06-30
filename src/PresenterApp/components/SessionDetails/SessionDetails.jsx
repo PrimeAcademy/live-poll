@@ -89,6 +89,21 @@ function SessionDetails() {
         });
     }, []);
 
+    // Listen for new participants added
+    useEffect(() => {
+        socket.on('participantJoined', (participant) => {
+            if (participant.sessionId === session.id) {
+                dispatch({
+                    type: 'ADD_SESSION_PARTICIPANT',
+                    payload: {
+                        ...participant,
+                        scores: [],
+                    },
+                });
+            }
+        });
+    });
+
     // https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
     const copyJoinCode = (evt) => {
         try {

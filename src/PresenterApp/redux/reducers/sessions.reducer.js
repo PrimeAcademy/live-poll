@@ -22,6 +22,13 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
                 averageScore: averageScore(p.scores),
             })),
         };
+    case 'ADD_SESSION_PARTICIPANT':
+        const nextParticipants = [...state.participants, action.payload];
+        return {
+            ...state,
+            averageScores: allAverageScores(nextParticipants),
+            participants: nextParticipants,
+        };
     case 'ADD_SCORE':
         const participants = state.participants.map((p) => (
             // If the new score is for this participant
