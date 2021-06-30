@@ -74,8 +74,6 @@ async function fetchParticipant(id) {
 
     const user = users[0];
 
-    console.log(user);
-
     if (user.presenter) {
         delete user.presenter.password;
 

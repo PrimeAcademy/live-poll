@@ -96,7 +96,7 @@ function ParticipantLogin() {
                 {/* TODO: need a "what's a session code, where do I get one thing" */}
                 <TextField
                     value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value)}
+                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                     variant="outlined"
                     style={{
                         width: '100%',

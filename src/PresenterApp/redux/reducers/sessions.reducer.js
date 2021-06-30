@@ -16,10 +16,16 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
     case 'ADD_SCORE':
         return {
             ...state,
-            participants: state.participants.map((p) => ({
-                ...p,
-                scores: p.scores.concat(action.payload),
-            })),
+            // Loop through participants.
+            participants: state.participants.map((p) => (
+                // If the new score is for this participant
+                // add it to the list of scores
+                p.id === action.payload.participantId
+                    ? {
+                        ...p,
+                        scores: p.scores.concat(action.payload),
+                    }
+                    : p)),
         };
     }
 
