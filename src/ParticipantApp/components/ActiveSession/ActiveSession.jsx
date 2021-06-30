@@ -10,6 +10,7 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import io from 'socket.io-client';
 import ScoreHistory from '../../../ScoreHistory/ScoreHistory';
 import ButtonLink from '../../../PresenterApp/components/Util/ButtonLink';
 
@@ -107,6 +108,7 @@ function ActiveSession() {
     const dispatch = useDispatch();
     // Track the current value of slider (before it's released)
     const scoreUncommitted = useSelector((store) => store.scoreUncommitted);
+    const [socket, setSocket] = useState(null);
 
     const session = useSelector((store) => store.user.session);
 
@@ -131,6 +133,24 @@ function ActiveSession() {
             ],
         });
     });
+
+    // setup socket connection
+    useEffect(() => {
+        // eslint-disable-next-line no-shadow
+        const socket = io();
+        setSocket(socket);
+
+        // Show error on connect timeout
+        const timeoutTimer = setTimeout(() => {
+            dispatch({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Timeout connecting to socket.io server'),
+            });
+        }, 10000);
+        socket.on('connect', () => clearTimeout(timeoutTimer));
+
+        return () => socket.disconnect();
+    }, [session.id]);
 
     // Change slider color as the value changes
     useEffect(() => {
@@ -210,10 +230,14 @@ function ActiveSession() {
                     })}
                     // only triggered while mouse-up
                     // actually sends to server
-                    onChangeCommitted={(e, val) => dispatch({
-                        type: 'SEND_SCORE',
-                        payload: Number(val),
-                    })}
+                    onChangeCommitted={(e, val) => {
+                        dispatch({
+                            type: 'SEND_SCORE',
+                            payload: Number(val),
+                        });
+                        // Send the score to the server
+                        socket.emit('sendScore', Number(val));
+                    }}
                     min={1}
                     max={5}
                     step={0.1}
