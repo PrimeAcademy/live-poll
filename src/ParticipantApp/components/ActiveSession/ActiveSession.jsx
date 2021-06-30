@@ -111,6 +111,7 @@ function ActiveSession() {
     const [socket, setSocket] = useState(null);
 
     const session = useSelector((store) => store.user.session);
+    const userId = useSelector((store) => store.user.id);
 
     const classes = useStyles();
     const sliderRef = useRef(null);
@@ -136,6 +137,11 @@ function ActiveSession() {
 
     // setup socket connection
     useEffect(() => {
+        console.log(`
+        ----------
+        connecting
+        -----------
+        `);
         // eslint-disable-next-line no-shadow
         const socket = io();
         setSocket(socket);
@@ -150,7 +156,7 @@ function ActiveSession() {
         socket.on('connect', () => clearTimeout(timeoutTimer));
 
         return () => socket.disconnect();
-    }, [session.id]);
+    }, [session.id, userId]);
 
     // Change slider color as the value changes
     useEffect(() => {

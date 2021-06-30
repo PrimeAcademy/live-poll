@@ -49,6 +49,7 @@ module.exports = (server) => {
         console.log('connected', user.displayName);
         console.log('connection count', io.engine.clientsCount);
         if (user.type === 'participant') {
+            console.log('emit participantJoined for sesh', user.sessionId, user.displayName);
             socket.to(user.sessionId).emit('participantJoined', user);
         }
 

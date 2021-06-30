@@ -45,7 +45,7 @@ function ScoreChart({
                         format: 'hh:mm',
                     },
                     y: {
-                        formatter: (val) => val.toFixed(1),
+                        formatter: (val) => (val === undefined ? '' : val.toFixed(1)),
                     },
                 },
                 stroke: { curve: 'smooth' },
@@ -59,7 +59,7 @@ function ScoreChart({
                 },
                 yaxis: {
                     labels: {
-                        formatter: (val) => val.toFixed(1),
+                        formatter: (val) => (val === undefined ? '' : val.toFixed(1)),
                     },
                 },
                 legend: { show: false },

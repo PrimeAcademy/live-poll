@@ -74,11 +74,37 @@ function SessionDetails() {
                 type: 'SET_GLOBAL_ERROR',
                 payload: new Error('Timeout connecting to socket.io server'),
             });
-        }, 10000);
+        }, 2000);
         socket.on('connect', () => clearTimeout(timeoutTimer));
 
+        // Listen for scores
+        socket.on('newScore', (score) => {
+            score.createdAt = new Date(score.createdAt);
+
+            dispatch({
+                type: 'ADD_SCORE',
+                payload: score,
+            });
+        });
+
+        // Listen for joined participants
+        socket.on('participantJoined', (participant) => {
+            const isAlreadyJoined = session.participants
+                .map((p) => p.id)
+                .includes(participant.id);
+            if (participant.sessionId === session.id && !isAlreadyJoined) {
+                dispatch({
+                    type: 'ADD_SESSION_PARTICIPANT',
+                    payload: {
+                        ...participant,
+                        scores: [],
+                    },
+                });
+            }
+        });
+
         return () => socket.disconnect();
-    }, [params.id]);
+    }, [session.id]);
 
     // Select name text in input, on switch to edit mode
     const nameInputRef = createRef();
@@ -96,42 +122,6 @@ function SessionDetails() {
             payload: params.id,
         });
     }, [params.id]);
-
-    // Listen for updates to scores (socket.io)
-    useEffect(() => {
-        if (!socket) {
-            return;
-        }
-        socket.on('newScore', (score) => {
-            score.createdAt = new Date(score.createdAt);
-
-            dispatch({
-                type: 'ADD_SCORE',
-                payload: score,
-            });
-        });
-    }, [socket]);
-
-    // Listen for new participants added
-    useEffect(() => {
-        if (!socket) {
-            return;
-        }
-        socket.on('participantJoined', (participant) => {
-            const isAlreadyJoined = session.participants
-                .map((p) => p.id)
-                .includes(participant.id);
-            if (participant.sessionId === session.id && !isAlreadyJoined) {
-                dispatch({
-                    type: 'ADD_SESSION_PARTICIPANT',
-                    payload: {
-                        ...participant,
-                        scores: [],
-                    },
-                });
-            }
-        });
-    }, [socket]);
 
     // https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
     const copyJoinCode = (evt) => {
