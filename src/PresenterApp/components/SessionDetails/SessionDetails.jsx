@@ -14,7 +14,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import io from 'socket.io-client';
 
 import PersonIcon from '@material-ui/icons/Person';
-import { useEffect, createRef, useState } from 'react';
+import { useEffect, createRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     useHistory, useParams, useLocation, Link,
@@ -56,8 +56,6 @@ function SessionDetails() {
     const session = useSelector((store) => store.sessionDetails);
     const editSession = useSelector((store) => store.editSession);
 
-    const [socket, setSocket] = useState(null);
-
     // Edit mode uses `/sessions/:id/edit` url
     const location = useLocation();
     const isEditMode = location.pathname.endsWith('/edit');
@@ -66,7 +64,6 @@ function SessionDetails() {
     useEffect(() => {
         // eslint-disable-next-line no-shadow
         const socket = io();
-        setSocket(socket);
 
         // Show error on connect timeout
         const timeoutTimer = setTimeout(() => {
