@@ -1,4 +1,4 @@
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, select, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
 // worker Saga: will be fired on "LOGIN" actions
@@ -48,6 +48,10 @@ function* logoutUser(action) {
         // when the server recognizes the user session
         // it will end the session
         yield axios.post('/api/user/logout', config);
+
+        // Close the socket.io connection
+        const socket = yield select((store) => store.user.socket);
+        socket.disconnect();
 
         // now that the session has ended on the server
         // remove the client-side user object to let
