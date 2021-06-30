@@ -17,8 +17,10 @@ function ScoreChart({
     }, []);
 
     useEffect(() => {
-        ApexCharts.exec(`${uniqueId}-scores`, 'updateSeries', getSeries());
-    }, [participants]);
+        if (uniqueId) {
+            ApexCharts.exec(`${uniqueId}-scores`, 'updateSeries', getSeries());
+        }
+    }, [participants, uniqueId]);
 
     return (
         <Chart

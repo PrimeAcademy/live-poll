@@ -38,7 +38,7 @@ function ParticipantRow({ participant }) {
                     fontSize: 24,
                 }}
                 >
-                    {participant.scores[participant.scores.length - 1].value}
+                    {participant.scores[participant.scores.length - 1].value.toFixed(1)}
                 </span>
                 <span style={{
                     fontSize: 14,

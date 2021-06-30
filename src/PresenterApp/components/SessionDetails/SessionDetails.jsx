@@ -428,6 +428,16 @@ function SessionDetails() {
                         <TableContainer>
                             <Table>
                                 <TableBody>
+                                    <ParticipantRow
+                                        key="average"
+                                        participant={{
+                                            displayName: 'AVERAGE',
+                                            scores: session.averageScores,
+                                            averageScore: session.averageScores
+                                                .reduce((sum, val) => sum + val.value, 0)
+                                                / session.averageScores.length,
+                                        }}
+                                    />
                                     {session.participants.map((participant) => (
                                         <ParticipantRow
                                             key={participant.id}
