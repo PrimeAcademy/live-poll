@@ -1,6 +1,5 @@
 const passport = require('passport');
 const socketIo = require('socket.io');
-const { Score } = require('@material-ui/icons');
 const sessionMiddleware = require('./modules/session-middleware');
 const pool = require('./modules/pool');
 

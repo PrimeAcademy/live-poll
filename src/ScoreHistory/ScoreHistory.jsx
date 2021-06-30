@@ -1,7 +1,4 @@
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import Chart from 'react-apexcharts';
-import ApexCharts from 'apexcharts';
 import ScoreChart from '../ScoreChart/ScoreChart';
 
 function ScoreHistory() {
