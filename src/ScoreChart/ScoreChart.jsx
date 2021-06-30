@@ -1,17 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 
 function ScoreChart({
     participants,
+    isMini = false,
 }) {
+    const [uniqueId, setUniqueId] = useState(null);
     const getSeries = () => participants.map((part) => ({
         name: part.displayName,
         data: part.scores.map((s) => [s.createdAt.getTime(), s.value]),
     }));
 
     useEffect(() => {
-        ApexCharts.exec('realtime', 'updateSeries', getSeries());
+        setUniqueId(Math.random());
+    }, []);
+
+    useEffect(() => {
+        ApexCharts.exec(`${uniqueId}-scores`, 'updateSeries', getSeries());
     }, [participants]);
 
     return (
@@ -21,7 +27,8 @@ function ScoreChart({
             // https://apexcharts.com/docs/options/
             options={{
                 chart: {
-                    id: 'realtime',
+                    // Each chart needs a unique ID, so we can update with .exec()
+                    id: `${uniqueId}-scores`,
                     animations: {
                         enabled: true,
                         easing: 'linear',
@@ -48,17 +55,22 @@ function ScoreChart({
                         formatter: (val) => (val === undefined ? '' : val.toFixed(1)),
                     },
                 },
-                stroke: { curve: 'smooth' },
+                stroke: {
+                    curve: 'smooth',
+                    width: isMini ? 1 : 6,
+                },
                 // dataLabels: { enabled: false },
                 xaxis: {
                     type: 'datetime',
                     labels: {
+                        show: !isMini,
                         datetimeUTC: false,
                         format: 'hh:mm',
                     },
                 },
                 yaxis: {
                     labels: {
+                        show: !isMini,
                         formatter: (val) => (val === undefined ? '' : val.toFixed(1)),
                     },
                 },

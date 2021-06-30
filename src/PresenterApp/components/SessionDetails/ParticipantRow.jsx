@@ -4,7 +4,8 @@ import {
     TableCell,
 } from '@material-ui/core';
 import moment from 'moment';
-import MiniScoresChart from '../ScoresChart/MiniScoresChart';
+
+import ScoresChart from '../../../ScoreChart/ScoreChart';
 
 function ParticipantRow({ participant }) {
     return (
@@ -13,11 +14,16 @@ function ParticipantRow({ participant }) {
             <TableCell style={{ maxWidth: 60, paddingLeft: 0 }}>
                 <div style={{
                     width: 60,
-                    height: 35,
+                    height: 60,
                     marginLeft: -6,
                 }}
                 >
-                    <MiniScoresChart />
+                    <ScoresChart
+                        isMini
+                        participants={[
+                            participant,
+                        ]}
+                    />
                 </div>
             </TableCell>
 
@@ -32,13 +38,13 @@ function ParticipantRow({ participant }) {
                     fontSize: 24,
                 }}
                 >
-                    {(Math.random() * 5).toFixed(1)}
+                    {participant.scores[participant.scores.length - 1].value}
                 </span>
                 <span style={{
                     fontSize: 14,
                 }}
                 >
-                                            &nbsp;/ {(Math.random() * 5).toFixed(1)} avg
+                    &nbsp;/ {participant.averageScore.toFixed(1)} avg
                 </span>
             </TableCell>
 

@@ -421,6 +421,7 @@ function SessionDetails() {
                     </div>
                 </h2>
 
+                {/* Participant List */}
                 {session.participants.length
                     ? (
 
