@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     Route, HashRouter as Router, Switch, Redirect,
 } from 'react-router-dom';
+import { Snackbar } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import ActiveSession from '../ActiveSession/ActiveSession';
 import ParticipantLogin from '../ParticipantLogin/ParticipantLogin';
 import Logout from '../Logout/Logout';
@@ -12,6 +14,7 @@ function App() {
     const dispatch = useDispatch();
     const user = useSelector((store) => store.user);
     const isLoggedIn = user && user.id;
+    const globalError = useSelector((store) => store.errors.globalError);
 
     useEffect(() => {
         dispatch({ type: 'FETCH_USER' });
@@ -46,6 +49,19 @@ function App() {
                         : <Redirect to="/login" />}
                 </Route>
             </Switch>
+
+            <Snackbar
+                open={globalError}
+                onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => dispatch({ type: 'CLEAR_GLOBAL_ERROR' })}
+                    severity="error"
+                >
+                    {globalError}
+                </Alert>
+            </Snackbar>
         </Router>
     );
 }

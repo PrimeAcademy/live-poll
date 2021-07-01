@@ -150,9 +150,8 @@ function ActiveSession() {
 
         socket.on('kickParticipant', (participant) => {
             console.log('I got the boot!', participant);
-            // todo show notification
             dispatch({
-                type: 'UNSET_USER',
+                type: 'KICKED_USER',
             });
         });
 

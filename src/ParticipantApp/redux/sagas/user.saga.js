@@ -27,8 +27,21 @@ function* fetchUser() {
     }
 }
 
+function* kickedUser() {
+    try {
+        yield put({ type: 'LOGOUT' });
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: new Error('You have been removed from the session by the presenter'),
+        });
+    } catch (err) {
+        console.error('kick user failed', err);
+    }
+}
+
 function* userSaga() {
     yield takeLatest('FETCH_USER', fetchUser);
+    yield takeLatest('KICKED_USER', kickedUser);
 }
 
 export default userSaga;
