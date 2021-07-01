@@ -55,6 +55,7 @@ function SessionDetails() {
     const history = useHistory();
     const session = useSelector((store) => store.sessionDetails);
     const editSession = useSelector((store) => store.editSession);
+    const { averageScores, participants } = session;
 
     // Edit mode uses `/sessions/:id/edit` url
     const location = useLocation();
@@ -402,7 +403,7 @@ function SessionDetails() {
                         verticalAlign: 2,
                     }}
                     >
-                        {session.participants.length}
+                        {participants.length}
                         <PersonIcon style={{
                             verticalAlign: -5,
                             fontSize: 22,
@@ -410,6 +411,30 @@ function SessionDetails() {
                         }}
                         />
                     </div>
+                    {averageScores && averageScores.length
+                            && (
+                                <div style={{
+                                    fontSize: 13,
+                                    paddingTop: 3,
+                                }}
+                                >
+                                    <div>
+                                        Current Average: {
+                                            averageScores[averageScores.length - 1]
+                                                .value.toFixed(1)
+                                        }
+                                    </div>
+                                    <div>
+                                        Aggregate Average: {
+                                            (
+                                                averageScores
+                                                    .reduce((sum, score) => sum + score.value, 0)
+                                                / averageScores.length
+                                            ).toFixed(1)
+                                        }
+                                    </div>
+                                </div>
+                            )}
                 </h2>
 
                 {/* Participant List */}
@@ -419,19 +444,6 @@ function SessionDetails() {
                         <TableContainer>
                             <Table>
                                 <TableBody>
-                                    <ParticipantRow
-                                        key="average"
-                                        participant={{
-                                            displayName: 'AVERAGE',
-                                            scores: session.averageScores,
-                                            averageScore: session.averageScores.length
-                                                ? session.averageScores
-                                                    .reduce((sum, val) => sum + val.value, 0)
-                                                / session.averageScores.length
-                                                : null,
-
-                                        }}
-                                    />
                                     {session.participants.map((participant) => (
                                         <ParticipantRow
                                             key={participant.id}

@@ -76,18 +76,12 @@ function ParticipantRow({ participant }) {
             >
                 Joined: {moment(participant.joinedAt)
                     .format('h:mma')}
-                {hasExited && (
-                    <div>
-                        Exited: {moment(participant.exitedAt)
-                            .format('h:mma')}
-                    </div>
-                )}
 
             </TableCell>
 
             {/* Kick User */}
             <TableCell>
-                {!hasExited && (
+                {!hasExited ? (
                     <Button
                         color="secondary"
                         variant="outlined"
@@ -104,7 +98,19 @@ function ParticipantRow({ participant }) {
                     >
                         Kick User
                     </Button>
-                )}
+                )
+                    : (
+                        <div style={{
+                            fontStyle: 'italic',
+                            fontSize: 14,
+                            paddingRight: 34,
+                            maxWidth: 130,
+                        }}
+                        >
+                            Exited: {moment(participant.exitedAt)
+                                .format('h:mma')}
+                        </div>
+                    )}
             </TableCell>
         </TableRow>
     );
