@@ -286,8 +286,7 @@ function SessionDetails() {
                             ? (
                                 // If participants have already joined,
                                 // show End Session
-                                <ButtonLink
-                                    to="/sessions/new"
+                                <Button
                                     style={{
                                         fontSize: 14,
                                         padding: '2px 10px',
@@ -295,9 +294,13 @@ function SessionDetails() {
                                     }}
                                     color="secondary"
                                     variant="outlined"
+                                    onClick={() => dispatch({
+                                        type: 'END_SESSION',
+                                        payload: session.id,
+                                    })}
                                 >
                                     End Session
-                                </ButtonLink>
+                                </Button>
                             )
                             : (
                                 // If no participants have joined yet,

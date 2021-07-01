@@ -1,3 +1,5 @@
+import { AssignmentReturn } from '@material-ui/icons';
+
 /* eslint-disable no-shadow */
 export const sessionList = (state = [], action) => {
     switch (action.type) {
@@ -62,6 +64,13 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
             // Loop through participants.
             participants,
         };
+    case 'END_SESSION':
+        return {
+            ...state,
+            endedAt: new Date(),
+        };
+    case 'UNSET_SESSION_DETAILS':
+        return { presenter: {}, participants: [] };
     }
 
     return state;

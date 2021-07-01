@@ -10,8 +10,11 @@ import {
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
+import { session } from 'passport';
 import ButtonLink from '../Util/ButtonLink';
 import MiniScoresChart from '../ScoresChart/MiniScoresChart';
+import Logo from '../Logo/Logo';
+import logoGreen from '../../images/swipe-green.png';
 
 const useStyles = makeStyles({
     // Allow link to stretch the entire width/height of the containing column
@@ -98,6 +101,19 @@ function SessionList() {
                                 {/* Name */}
                                 <TableCell style={{ fontWeight: 'bold' }}>
                                     <Link className={classes.stretchedLink} to={`/sessions/${sesh.id}`}>
+                                        {sesh.endedAt === null && (
+                                            <img
+                                                alt="Active session"
+                                                title="Active session"
+                                                src={logoGreen}
+                                                style={{
+                                                    transform: 'rotate(-17deg)',
+                                                    width: 30,
+                                                    marginRight: 6,
+                                                    verticalAlign: -9,
+                                                }}
+                                            />
+                                        )}
                                         {sesh.name}
                                     </Link>
                                 </TableCell>
@@ -120,8 +136,17 @@ function SessionList() {
                                     paddingRight: 34,
                                 }}
                                 >
-                                    {moment(sesh.createdAt)
-                                        .format('MMM D, \'YY @ h:mma')}
+                                    <div>
+                                        {moment(sesh.createdAt)
+                                            .format('MMM D, \'YY')}
+                                    </div>
+                                    <div>
+                                        {moment(sesh.createdAt)
+                                            .format('h:mma')}
+                                        {sesh.endedAt
+                                        && ` - ${moment(sesh.endedAt)
+                                            .format('h:mma')}`}
+                                    </div>
                                 </TableCell>
 
                                 {/* View Details link */}

@@ -124,6 +124,20 @@ function* kickParticipant({
     }
 }
 
+function* endSession({
+    payload: sessionId,
+}) {
+    try {
+        yield axios.put(`/api/sessions/${sessionId}/end`);
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: err,
+        });
+    }
+}
+
 function* sessionSaga() {
     yield takeLatest('FETCH_SESSION_LIST', fetchSessionList);
     yield takeLatest('FETCH_SESSION_DETAILS', fetchSessionDetails);
@@ -131,6 +145,7 @@ function* sessionSaga() {
     yield takeLatest('UPDATE_SESSION', updateSession);
     yield takeLatest('DELETE_SESSION', deleteSession);
     yield takeLatest('KICK_PARTICIPANT', kickParticipant);
+    yield takeLatest('END_SESSION', endSession);
 }
 
 export default sessionSaga;
