@@ -146,15 +146,6 @@ function ActiveSession() {
         const socket = io();
         setSocket(socket);
 
-        // Show error on connect timeout
-        const timeoutTimer = setTimeout(() => {
-            dispatch({
-                type: 'SET_GLOBAL_ERROR',
-                payload: new Error('Timeout connecting to socket.io server'),
-            });
-        }, 10000);
-        socket.on('connect', () => clearTimeout(timeoutTimer));
-
         return () => socket.disconnect();
     }, [session.id, userId]);
 

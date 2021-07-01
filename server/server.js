@@ -4,10 +4,10 @@ require('express-async-errors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
-const app = express();
-const server = http.createServer(app);
-
 const passport = require('passport');
+
+const { http: server, express: app } = require('./httpServer');
+
 const sessionMiddleware = require('./modules/session-middleware');
 require('./strategies/serialize');
 require('./strategies/presenter.strategy');
@@ -21,7 +21,7 @@ const scoresRouter = require('./routes/scores.router');
 const participantRouter = require('./routes/participant.router');
 
 // Setup socket.io
-require('./io')(server);
+require('./io').setup();
 
 // Body parser middleware
 app.use(bodyParser.json());

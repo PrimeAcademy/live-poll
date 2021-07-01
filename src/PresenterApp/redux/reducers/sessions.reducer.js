@@ -23,7 +23,11 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
             })),
         };
     case 'ADD_SESSION_PARTICIPANT':
-        const nextParticipants = [...state.participants, action.payload];
+        const newParticipant = {
+            ...action.payload,
+            averageScore: averageScore(action.payload.scores),
+        };
+        const nextParticipants = [...state.participants, newParticipant];
         return {
             ...state,
             averageScores: allAverageScores(nextParticipants),

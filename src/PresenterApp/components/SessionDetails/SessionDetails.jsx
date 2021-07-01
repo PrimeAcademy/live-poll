@@ -65,15 +65,6 @@ function SessionDetails() {
         // eslint-disable-next-line no-shadow
         const socket = io();
 
-        // Show error on connect timeout
-        const timeoutTimer = setTimeout(() => {
-            dispatch({
-                type: 'SET_GLOBAL_ERROR',
-                payload: new Error('Timeout connecting to socket.io server'),
-            });
-        }, 2000);
-        socket.on('connect', () => clearTimeout(timeoutTimer));
-
         // Listen for scores
         socket.on('newScore', (score) => {
             score.createdAt = new Date(score.createdAt);

@@ -140,4 +140,44 @@ router.delete('/:id', async (req, res) => {
     res.sendStatus(204);
 });
 
+/*
+Remove ("kick") a participant from the session
+*/
+router.delete('/:sessionId/participants/:participantId', async (req, res) => {
+    const { participantId, sessionId } = req.params;
+    // Make sure the participant is in this session
+    const { rows: matchingParticipants } = await pool.query(`
+        SELECT *
+        FROM participant
+        JOIN session ON session.id = participant."sessionId"
+        WHERE participant.id = $1
+        AND session.id = $2
+    `, [participantId, sessionId]);
+
+    // Check for 404
+    if (!matchingParticipants.length) {
+        res.status(404).send({
+            message: `Participant ${participantId} does not exist in session ${sessionId}`,
+        });
+        return;
+    }
+    // Check if already exited
+    if (matchingParticipants.exitedAt !== null) {
+        res.status(409).send({
+            message: `Participant ${participantId} has already exited this session`,
+        });
+        return;
+    }
+
+    // This is a "soft delete", b/c we don't want
+    // to lose this participants feedback.
+    // Mark them as "exited"
+    await pool.query(`
+        UPDATE participant
+        SET "exitedAt" = CURRENT_TIMESTAMP
+        WHERE participant.id = $1
+        RETURNING id
+    `, [req.params.participantId]);
+});
+
 module.exports = router;
