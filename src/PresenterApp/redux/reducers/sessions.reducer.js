@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 export const sessionList = (state = [], action) => {
     switch (action.type) {
     case 'PUT_SESSION_LIST':
@@ -33,6 +34,16 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
             averageScores: allAverageScores(nextParticipants),
             participants: nextParticipants,
         };
+    case 'REMOVE_SESSION_PARTICIPANT':
+    {
+        const nextParticipants = state.participants
+            .filter((p) => p.id !== action.payload);
+        return {
+            ...state,
+            averageScores: allAverageScores(nextParticipants),
+            participants: nextParticipants,
+        };
+    }
     case 'ADD_SCORE':
         const participants = state.participants.map((p) => (
             // If the new score is for this participant

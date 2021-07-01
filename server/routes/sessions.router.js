@@ -167,15 +167,15 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
         });
         return;
     }
+    const participant = matchingParticipants[0];
+
     // Check if already exited
-    if (matchingParticipants.exitedAt !== null) {
+    if (participant.exitedAt !== null) {
         res.status(409).send({
             message: `Participant ${participantId} has already exited this session`,
         });
         return;
     }
-
-    const participant = matchingParticipants[0];
 
     // This is a "soft delete", b/c we don't want
     // to lose this participants feedback.
@@ -188,7 +188,9 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
     `, [req.params.participantId]);
 
     // Let the participant know that the user has been removed
-    io.to(sessionId).emit('kickParticipant', participant);
+    io.to(`participant/${participantId}`).emit('kickParticipant', participant);
+
+    res.send(204);
 });
 
 module.exports = router;

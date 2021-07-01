@@ -4,12 +4,21 @@ import {
     TableCell,
 } from '@material-ui/core';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
 
 import ScoresChart from '../../../ScoreChart/ScoreChart';
 
 function ParticipantRow({ participant }) {
+    const dispatch = useDispatch();
+
+    const hasExited = participant.exitedAt
+        && new Date(participant.exitedAt) <= new Date();
+
     return (
-        <TableRow>
+        <TableRow style={hasExited ? {
+            opacity: 0.6,
+        } : {}}
+        >
             {/* Scores chart */}
             <TableCell style={{ maxWidth: 60, paddingLeft: 0 }}>
                 <div style={{
@@ -65,22 +74,37 @@ function ParticipantRow({ participant }) {
                 maxWidth: 130,
             }}
             >
-                Joined @ {moment(participant.joinedAt)
+                Joined: {moment(participant.joinedAt)
                     .format('h:mma')}
+                {hasExited && (
+                    <div>
+                        Exited: {moment(participant.exitedAt)
+                            .format('h:mma')}
+                    </div>
+                )}
+
             </TableCell>
 
             {/* Kick User */}
             <TableCell>
-                <Button
-                    color="secondary"
-                    variant="outlined"
-                    style={{
-                        fontSize: 14,
-                        padding: '4px 14px',
-                    }}
-                >
-                    Kick User
-                </Button>
+                {!hasExited && (
+                    <Button
+                        color="secondary"
+                        variant="outlined"
+                        style={{
+                            fontSize: 14,
+                            padding: '4px 14px',
+                        }}
+                        onClick={() => {
+                            dispatch({
+                                type: 'KICK_PARTICIPANT',
+                                payload: participant,
+                            });
+                        }}
+                    >
+                        Kick User
+                    </Button>
+                )}
             </TableCell>
         </TableRow>
     );

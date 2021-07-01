@@ -148,6 +148,14 @@ function ActiveSession() {
         });
         socket.emit('sendScore', scoreUncommitted);
 
+        socket.on('kickParticipant', (participant) => {
+            console.log('I got the boot!', participant);
+            // todo show notification
+            dispatch({
+                type: 'UNSET_USER',
+            });
+        });
+
         return () => socket.disconnect();
     }, [session.id, userId]);
 

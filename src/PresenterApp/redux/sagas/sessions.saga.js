@@ -17,10 +17,11 @@ function* fetchSessionList() {
     }
 }
 
-function* fetchSessionDetails(action) {
+function* fetchSessionDetails({
+    payload: sessionId,
+}) {
     try {
-        console.log(action);
-        const { data } = yield axios.get(`/api/sessions/${action.payload}`);
+        const { data } = yield axios.get(`/api/sessions/${sessionId}`);
 
         // Convert score timestamps to dates
         for (const part of data.participants) {
@@ -98,12 +99,38 @@ function* deleteSession(action) {
     }
 }
 
+function* kickParticipant({
+    payload: {
+        id: participantId,
+        sessionId,
+    },
+}) {
+    try {
+        // Remove participant from sessions
+        // (sets exitedAt to NOW)
+        yield axios.delete(`/api/sessions/${sessionId}/participants/${participantId}`);
+
+        // Update participants list
+        yield put({
+            type: 'FETCH_SESSION_DETAILS',
+            payload: sessionId,
+        });
+    } catch (err) {
+        console.error(err);
+        yield put({
+            type: 'SET_GLOBAL_ERR',
+            payload: err,
+        });
+    }
+}
+
 function* sessionSaga() {
     yield takeLatest('FETCH_SESSION_LIST', fetchSessionList);
     yield takeLatest('FETCH_SESSION_DETAILS', fetchSessionDetails);
     yield takeLatest('CREATE_SESSION', createSession);
     yield takeLatest('UPDATE_SESSION', updateSession);
     yield takeLatest('DELETE_SESSION', deleteSession);
+    yield takeLatest('KICK_PARTICIPANT', kickParticipant);
 }
 
 export default sessionSaga;
