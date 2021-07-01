@@ -40,7 +40,6 @@ const globalError = (state = null, action) => {
             ? err.response.data.message
             : err.message;
 
-        console.error(msg);
         return msg;
     case 'CLEAR_GLOBAL_ERROR':
         return null;

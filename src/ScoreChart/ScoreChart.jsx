@@ -75,6 +75,8 @@ function ScoreChart({
                         show: !isMini,
                         formatter: (val) => (val === undefined ? '' : val.toFixed(1)),
                     },
+                    min: 1,
+                    max: 5,
                 },
                 legend: { show: false },
             }}

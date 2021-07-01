@@ -137,14 +137,16 @@ function ActiveSession() {
 
     // setup socket connection
     useEffect(() => {
-        console.log(`
-        ----------
-        connecting
-        -----------
-        `);
         // eslint-disable-next-line no-shadow
         const socket = io();
         setSocket(socket);
+
+        // Send the initial score
+        dispatch({
+            type: 'SEND_SCORE',
+            payload: scoreUncommitted,
+        });
+        socket.emit('sendScore', scoreUncommitted);
 
         return () => socket.disconnect();
     }, [session.id, userId]);

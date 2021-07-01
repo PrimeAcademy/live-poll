@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const pool = require('../modules/pool');
 const { rejectUnauthenticated } = require('../modules/authentication-middleware');
+const { io } = require('../io');
 
 router.get('/', rejectUnauthenticated, async (req, res) => {
     const sql = `
@@ -38,7 +39,7 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
                 participant.*,
                 array_agg(to_json(score) ORDER BY "createdAt" ASC) as "scores"
             FROM "participant"
-            JOIN "score" ON "score"."participantId" = participant.id
+            LEFT JOIN "score" ON "score"."participantId" = participant.id
             GROUP BY "participant".id
         ) as "participant"
             ON "participant"."sessionId" = "session".id
@@ -62,7 +63,12 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     const session = rows[0];
 
     // postgress returns [null] if there are no particpants
-    session.participants = session.participants.filter(Boolean);
+    session.participants = session.participants
+        .filter(Boolean)
+        .map((p) => ({
+            ...p,
+            scores: p.scores.filter(Boolean),
+        }));
 
     res.send(rows[0]);
 });
@@ -147,7 +153,7 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
     const { participantId, sessionId } = req.params;
     // Make sure the participant is in this session
     const { rows: matchingParticipants } = await pool.query(`
-        SELECT *
+        SELECT participant.*, to_json(session)
         FROM participant
         JOIN session ON session.id = participant."sessionId"
         WHERE participant.id = $1
@@ -169,6 +175,8 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
         return;
     }
 
+    const participant = matchingParticipants[0];
+
     // This is a "soft delete", b/c we don't want
     // to lose this participants feedback.
     // Mark them as "exited"
@@ -178,6 +186,9 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
         WHERE participant.id = $1
         RETURNING id
     `, [req.params.participantId]);
+
+    // Let the participant know that the user has been removed
+    io.to(sessionId).emit('kickParticipant', participant);
 });
 
 module.exports = router;

@@ -424,9 +424,12 @@ function SessionDetails() {
                                         participant={{
                                             displayName: 'AVERAGE',
                                             scores: session.averageScores,
-                                            averageScore: session.averageScores
-                                                .reduce((sum, val) => sum + val.value, 0)
-                                                / session.averageScores.length,
+                                            averageScore: session.averageScores.length
+                                                ? session.averageScores
+                                                    .reduce((sum, val) => sum + val.value, 0)
+                                                / session.averageScores.length
+                                                : null,
+
                                         }}
                                     />
                                     {session.participants.map((participant) => (

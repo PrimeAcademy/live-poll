@@ -41,12 +41,15 @@ function ParticipantRow({ participant }) {
                     {participant.scores.length
                         && participant.scores[participant.scores.length - 1].value.toFixed(1)}
                 </span>
-                <span style={{
-                    fontSize: 14,
-                }}
-                >
-                    &nbsp;/ {participant.averageScore.toFixed(1)} avg
-                </span>
+                {participant.averageScore !== null
+                && (
+                    <span style={{
+                        fontSize: 14,
+                    }}
+                    >
+                        &nbsp;/ {participant.averageScore.toFixed(1)} avg
+                    </span>
+                )}
             </TableCell>
 
             {/* Name */}

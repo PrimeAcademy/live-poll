@@ -26,59 +26,57 @@ const setup = () => {
 
     io.on('connect', async (socket) => {
         const { user } = socket.request;
-        if (user.type === 'presenter') {
-        // Join presenter rooms
-            const { rows: sessions } = await pool.query(`
-                SELECT session.id
-                FROM session
-                JOIN "user"
-                    ON "user".id = "session"."presenterId"
-                WHERE "session"."presenterId" = $1
-            `, [
-                user.id,
-            ]);
 
-            // TODO: I don't think this works with newly created room:
-            // we're already connected to socket.io, this code doesn't run
-            for (const sesh of sessions) {
-                socket.join(sesh.id);
-            }
-        }
+        // Join room called `presenter/:id` or `participant/:id`
+        const userRoom = `${user.type}/${user.id}`;
+        console.log(`User ${user.id} (${user.displayName}) joining room ${userRoom}`);
+        socket.join(userRoom);
 
         // Let the presenter now a participant has joined
         console.log('connected', user.displayName, 'connection count', io.engine.clientsCount);
         if (user.type === 'participant') {
-            console.log('emit participantJoined for sesh', user.sessionId, user.displayName);
-            socket.to(user.sessionId).emit('participantJoined', user);
-        }
+            // Tell the presenter that the participant has joined this room
+            const { rows: [session] } = await pool.query(`
+                SELECT *
+                FROM session
+                WHERE session.id = $1
+            `, [user.sessionId]);
+            if (!session) {
+                throw new Error(`Unable to find session ${user.sessionId} for participant ${user.id}`);
+            }
 
-        // Receive scores from participants
-        socket.on('sendScore', async (value) => {
-            const score = {
-                value,
-                // add participantId to score
-                participantId: user.id,
-                createdAt: new Date(),
-            };
+            const presenterRoom = `presenter/${session.presenterId}`;
+            console.log(`emitting "participantJoined" to ${presenterRoom}`);
+            socket.to(presenterRoom).emit('participantJoined', user);
 
-            // Send the score to the presenter
-            socket.to(user.sessionId).emit('newScore', score);
+            // Receive scores from participants
+            socket.on('sendScore', async (value) => {
+                const score = {
+                    value,
+                    // add participantId to score
+                    participantId: user.id,
+                    createdAt: new Date(),
+                };
 
-            // Save score to the database
-            await pool.query(`
+                // Send the score to the presenter
+                socket.to(presenterRoom).emit('newScore', score);
+
+                // Save score to the database
+                await pool.query(`
                 INSERT INTO "score"
                     ("participantId", "value", "createdAt")
                 VALUES ($1, $2, $3);
             `, [
-                score.participantId,
-                score.value,
-                score.createdAt,
-            ]);
-        });
+                    score.participantId,
+                    score.value,
+                    score.createdAt,
+                ]);
+            });
+        }
 
         socket.on('disconnect', () => {
-            console.log('disconnect', user.displayName);
-            console.log('connection count', io.engine.clientsCount);
+            console.log('disconnect', user.displayName, 'connection count', io.engine.clientsCount);
+            socket.leave(userRoom);
         });
     });
 };

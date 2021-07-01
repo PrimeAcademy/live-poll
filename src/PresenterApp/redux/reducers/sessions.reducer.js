@@ -92,6 +92,9 @@ function allAverageScores(participants) {
 }
 
 function averageScore(scores) {
+    if (!scores.length) {
+        return null;
+    }
     return scores.reduce((sum, score) => sum + score.value, 0) / scores.length;
 }
 

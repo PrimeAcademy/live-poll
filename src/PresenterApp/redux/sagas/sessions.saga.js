@@ -38,6 +38,7 @@ function* fetchSessionDetails(action) {
             type: 'SET_GLOBAL_ERROR',
             payload: err,
         });
+        throw err;
     }
 }
 
