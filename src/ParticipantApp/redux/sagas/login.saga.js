@@ -27,10 +27,18 @@ function* loginUser(action) {
             // if user isn't in the database or
             // if the username and password don't match in the database
             yield put({ type: 'LOGIN_FAILED' });
+            yield put({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Invalid login code'),
+            });
         } else {
             // Got an error that wasn't a 401
             // Could be anything, but most common cause is the server is not started
             yield put({ type: 'LOGIN_FAILED_NO_CODE' });
+            yield put({
+                type: 'SET_GLOBAL_ERROR',
+                payload: new Error('Login failed'),
+            });
         }
     }
 }
@@ -47,7 +55,7 @@ function* logoutUser(action) {
         // allow the server session to recognize the user
         // when the server recognizes the user session
         // it will end the session
-        yield axios.post('/api/user/logout', config);
+        yield axios.post('/api/participants/logout', config);
 
         // now that the session has ended on the server
         // remove the client-side user object to let

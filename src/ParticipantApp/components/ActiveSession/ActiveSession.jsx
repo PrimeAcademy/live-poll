@@ -148,10 +148,17 @@ function ActiveSession() {
         });
         socket.emit('sendScore', scoreUncommitted);
 
+        // Handle getting kicked
         socket.on('kickParticipant', (participant) => {
-            console.log('I got the boot!', participant);
             dispatch({
                 type: 'KICKED_USER',
+            });
+        });
+
+        // Handle session ended
+        socket.on('sessionEnded', (session) => {
+            dispatch({
+                type: 'SESSION_ENDED',
             });
         });
 

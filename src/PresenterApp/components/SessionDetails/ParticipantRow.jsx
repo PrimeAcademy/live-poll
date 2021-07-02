@@ -4,13 +4,10 @@ import {
     TableCell,
 } from '@material-ui/core';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
 
 import ScoresChart from '../../../ScoreChart/ScoreChart';
 
-function ParticipantRow({ participant }) {
-    const dispatch = useDispatch();
-
+function ParticipantRow({ participant, sessionEndedAt, onKickUser }) {
     const hasExited = participant.exitedAt
         && new Date(participant.exitedAt) <= new Date();
 
@@ -81,7 +78,7 @@ function ParticipantRow({ participant }) {
 
             {/* Kick User */}
             <TableCell>
-                {!hasExited ? (
+                {!hasExited && sessionEndedAt === null ? (
                     <Button
                         color="secondary"
                         variant="outlined"
@@ -89,12 +86,7 @@ function ParticipantRow({ participant }) {
                             fontSize: 14,
                             padding: '4px 14px',
                         }}
-                        onClick={() => {
-                            dispatch({
-                                type: 'KICK_PARTICIPANT',
-                                payload: participant,
-                            });
-                        }}
+                        onClick={() => onKickUser(participant)}
                     >
                         Kick User
                     </Button>
@@ -107,7 +99,7 @@ function ParticipantRow({ participant }) {
                             maxWidth: 130,
                         }}
                         >
-                            Exited: {moment(participant.exitedAt)
+                            Exited: {moment(participant.exitedAt || sessionEndedAt)
                                 .format('h:mma')}
                         </div>
                     )}

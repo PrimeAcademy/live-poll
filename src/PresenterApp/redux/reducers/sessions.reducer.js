@@ -34,14 +34,24 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
             averageScores: allAverageScores(nextParticipants),
             participants: nextParticipants,
         };
-    case 'REMOVE_SESSION_PARTICIPANT':
+
+    // Participant exited
+    // set their exitedAt to nows
+    case 'PARTICIPANT_EXITED':
     {
-        const nextParticipants = state.participants
-            .filter((p) => p.id !== action.payload);
+        const participantId = action.payload;
         return {
             ...state,
-            averageScores: allAverageScores(nextParticipants),
-            participants: nextParticipants,
+            participants: state.participants.map((p) => (
+                // Updated matching particpant
+                // with new `exitedAt`
+                p.id === participantId
+                    ? {
+                        ...p,
+                        exitedAt: new Date(),
+                    }
+                    : p
+            )),
         };
     }
     case 'ADD_SCORE':
@@ -62,6 +72,13 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
             // Loop through participants.
             participants,
         };
+    case 'END_SESSION':
+        return {
+            ...state,
+            endedAt: new Date(),
+        };
+    case 'UNSET_SESSION_DETAILS':
+        return { presenter: {}, participants: [] };
     }
 
     return state;

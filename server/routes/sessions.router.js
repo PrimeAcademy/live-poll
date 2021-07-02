@@ -128,6 +128,39 @@ router.put('/:id', async (req, res) => {
     res.send(rows[0]);
 });
 
+// End session
+router.put('/:id/end', async (req, res) => {
+    const sessionId = req.params.id;
+    const { rows: sessions } = await pool.query(`
+        UPDATE session
+        SET "endedAt" = CURRENT_TIMESTAMP
+        WHERE session.id = $1 
+        AND session."endedAt" IS NULL
+        RETURNING *
+    `, [sessionId]);
+
+    if (!sessions.length) {
+        res.status(404).send({
+            message: `No active session exists with id ${sessionId}`,
+        });
+    }
+
+    const session = sessions[0];
+
+    // Remove all participants
+    const { rows: participants } = await pool.query(`
+        UPDATE participant
+        SET "exitedAt" = CURRENT_TIMESTAMP
+        WHERE participant."sessionId" = $1
+        RETURNING id
+    `, [sessionId]);
+
+    // Notify participants
+    for (const p of participants) {
+        io.to(`participant/${p.id}`).emit('sessionEnded', session);
+    }
+});
+
 router.delete('/:id', async (req, res) => {
     const sql = `
         DELETE FROM "session"

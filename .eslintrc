@@ -48,6 +48,7 @@
         "no-use-before-define": "off",
         "no-param-reassign": "off",
         "no-unused-expressions": "off",
-        "consistent-return": "off"
+        "consistent-return": "off",
+        "no-shadow": "off"
     }
 }

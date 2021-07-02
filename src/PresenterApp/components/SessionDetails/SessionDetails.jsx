@@ -14,15 +14,15 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import io from 'socket.io-client';
 
 import PersonIcon from '@material-ui/icons/Person';
-import { useEffect, createRef } from 'react';
+import { useEffect, createRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     useHistory, useParams, useLocation, Link,
 } from 'react-router-dom';
 import moment from 'moment';
-import ButtonLink from '../Util/ButtonLink';
 import ScoresChart from '../../../ScoreChart/ScoreChart';
 import ParticipantRow from './ParticipantRow';
+import ConfirmationDialog from '../Util/ConfirmationDialog';
 
 const useStyles = makeStyles({
     sessionName: {
@@ -53,6 +53,7 @@ function SessionDetails() {
     const dispatch = useDispatch();
     const params = useParams();
     const history = useHistory();
+    const [confirmationDialog, setConfirmationDialog] = useState(null);
     const session = useSelector((store) => store.sessionDetails);
     const editSession = useSelector((store) => store.editSession);
     const { averageScores, participants } = session;
@@ -61,8 +62,16 @@ function SessionDetails() {
     const location = useLocation();
     const isEditMode = location.pathname.endsWith('/edit');
 
+    const isActiveSession = session.endedAt === null;
+
     // Setup socket.io connection
     useEffect(() => {
+        // No need for socket.io connection
+        // if the session is ended
+        if (!isActiveSession) {
+            return;
+        }
+
         // eslint-disable-next-line no-shadow
         const socket = io();
 
@@ -89,11 +98,35 @@ function SessionDetails() {
                         scores: [],
                     },
                 });
+
+                // Display a toast
+                dispatch({
+                    type: 'SET_TOAST',
+                    payload: `${participant.displayName} has joined this session`,
+                });
             }
         });
 
+        socket.on('participantExited', (participant) => {
+            if (participant.sessionId !== session.id) {
+                console.warn('participantExited doesn\'t match current session',
+                    { participant, session });
+                return;
+            }
+            dispatch({
+                type: 'PARTICIPANT_EXITED',
+                payload: participant.id,
+            });
+
+            // Display a toast
+            dispatch({
+                type: 'SET_TOAST',
+                payload: `${participant.displayName} has left this session`,
+            });
+        });
+
         return () => socket.disconnect();
-    }, [session.id]);
+    }, [session.id, isActiveSession]);
 
     // Select name text in input, on switch to edit mode
     const nameInputRef = createRef();
@@ -158,260 +191,272 @@ function SessionDetails() {
     };
 
     return (
-        <Container style={{ maxWidth: 980 }}>
-            <Link
-                to="/sessions"
-                style={{
-                    textDecoration: 'none',
-                    paddingLeft: 20,
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    paddingBottom: 10,
-                    display: 'block',
-                    color: 'var(--almost-black)',
-                    marginTop: -15,
-                }}
-            >
-                <ArrowBackIosIcon style={{
-                    fontSize: 10,
-                    verticalAlign: 0,
-                }}
-                />
-                <span style={{ textDecoration: 'underline' }}>Back</span>
-            </Link>
-            <div style={{ padding: '0 20px' }}>
-                <div style={{ display: 'inline-block' }}>
-                    {isEditMode
-                        ? (
-                            <>
-                                <form onSubmit={onSubmitName} style={{ display: 'inline-block' }}>
-                                    <input
-                                    // eslint-disable-next-line jsx-a11y/no-autofocus
-                                        autoFocus
-                                        ref={nameInputRef}
-                                        type="text"
-                                        // todo save edit name state
-                                        value={editSession.name}
-                                        className={classes.sessionName}
-                                        onBlur={onSubmitName}
-                                        onChange={(e) => dispatch({
-                                            type: 'SET_EDIT_SESSION',
-                                            payload: { name: e.target.value },
-                                        })}
-                                        style={{ width: 600 }}
-                                    />
-                                    <MoreHorizIcon
-                                        style={{
-                                            fontSize: 26,
-                                            border: '1px solid rgba(0,0,0,0.9)',
-                                            borderRadius: 100,
-                                            marginLeft: 11,
-                                            background: 'white',
-                                            padding: 2,
-                                            color: '1px solid rgba(0,0,0,0.9)',
-                                        }}
-                                    />
-                                </form>
-                            </>
-                        )
-                        : (
+        <>
+            <Container style={{ maxWidth: 980 }}>
+                <Link
+                    to="/sessions"
+                    style={{
+                        textDecoration: 'none',
+                        paddingLeft: 20,
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        paddingBottom: 10,
+                        display: 'block',
+                        color: 'var(--almost-black)',
+                        marginTop: -15,
+                    }}
+                >
+                    <ArrowBackIosIcon style={{
+                        fontSize: 10,
+                        verticalAlign: 0,
+                    }}
+                    />
+                    <span style={{ textDecoration: 'underline' }}>Back</span>
+                </Link>
+                <div style={{ padding: '0 20px' }}>
+                    <div style={{ display: 'inline-block' }}>
+                        {isEditMode
+                            ? (
+                                <>
+                                    <form onSubmit={onSubmitName} style={{ display: 'inline-block' }}>
+                                        <input
+                                            // eslint-disable-next-line jsx-a11y/no-autofocus
+                                            autoFocus
+                                            ref={nameInputRef}
+                                            type="text"
+                                            // todo save edit name state
+                                            value={editSession.name}
+                                            className={classes.sessionName}
+                                            onBlur={onSubmitName}
+                                            onChange={(e) => dispatch({
+                                                type: 'SET_EDIT_SESSION',
+                                                payload: { name: e.target.value },
+                                            })}
+                                            style={{ width: 600 }}
+                                        />
+                                        <MoreHorizIcon
+                                            style={{
+                                                fontSize: 26,
+                                                border: '1px solid rgba(0,0,0,0.9)',
+                                                borderRadius: 100,
+                                                marginLeft: 11,
+                                                background: 'white',
+                                                padding: 2,
+                                                color: '1px solid rgba(0,0,0,0.9)',
+                                            }}
+                                        />
+                                    </form>
+                                </>
+                            )
+                            : (
                         /* Session name & edit link */
-                            <Link
-                                to={`/sessions/${session.id}/edit`}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: 'inherit',
-                                }}
-                            >
-                                <h2
-                                    className={`${classes.sessionName} h2`}
+                                <Link
+                                    to={`/sessions/${session.id}/edit`}
+                                    style={{
+                                        textDecoration: 'none',
+                                        color: 'inherit',
+                                    }}
                                 >
-                                    {session.name}
-                                </h2>
-                                <EditOutlinedIcon style={{
-                                    fontSize: 22,
-                                    marginLeft: 20,
-                                    cursor: 'pointer',
-                                    verticalAlign: 12,
-                                }}
-                                />
-                            </Link>
-                        )}
+                                    <h2
+                                        className={`${classes.sessionName} h2`}
+                                    >
+                                        {session.name}
+                                    </h2>
+                                    <EditOutlinedIcon style={{
+                                        fontSize: 22,
+                                        marginLeft: 20,
+                                        cursor: 'pointer',
+                                        verticalAlign: 12,
+                                    }}
+                                    />
+                                </Link>
+                            )}
 
-                    {/* Presented by */}
-                    <div style={{ fontStyle: 'italic' }}>
-                        Presented by: {session.presenter.displayName}
-                        <br />
-                        {moment(session.createdAt).format(
-                            'MMM D hh:mma',
-                        )}
-                        {session.endedAt
+                        {/* Presented by */}
+                        <div style={{ fontStyle: 'italic' }}>
+                            Presented by: {session.presenter.displayName}
+                            <br />
+                            {moment(session.createdAt).format(
+                                'MMM D hh:mma',
+                            )}
+                            {session.endedAt
                             && ` - ${moment(session.endedAt).format(
                                 'hh:mma',
                             )}`}
-                    </div>
-                </div>
-
-                {/* Side area: code + end sesh button */}
-                <div style={{ float: 'right' }}>
-                    <div
-                        style={{
-                            fontWeight: 'bold',
-                            marginBottom: 10,
-                            cursor: 'pointer',
-                            lineHeight: '30px', // to line up better w/h2
-                        }}
-                        onKeyDown={copyJoinCode}
-                        onClick={copyJoinCode}
-                        role="button"
-                        tabIndex="0"
-                    >
-                        Session Code:
-                        {' '}
-                        {session.joinCode}
-                        <FileCopyOutlinedIcon
-                            style={{
-                                fontSize: 18,
-                                marginLeft: 6,
-                                verticalAlign: -3,
-                            }}
-                        />
+                        </div>
                     </div>
 
-                    {/* If the session has already ended
-                        don't show end/cancel buttons
-                     */}
-                    {!!session.endedAt || (
-                        session.participants.length
-                            ? (
-                                // If participants have already joined,
-                                // show End Session
-                                <ButtonLink
-                                    to="/sessions/new"
-                                    style={{
-                                        fontSize: 14,
-                                        padding: '2px 10px',
-                                        float: 'right',
-                                    }}
-                                    color="secondary"
-                                    variant="outlined"
-                                >
-                                    End Session
-                                </ButtonLink>
-                            )
-                            : (
-                                // If no participants have joined yet,
-                                // we can "cancel" (delete) the session
-                                <Button
-                                    onClick={deleteSession}
-                                    style={{
-                                        fontSize: 14,
-                                        padding: '2px 10px',
-                                        float: 'right',
-                                    }}
-                                    color="secondary"
-                                    variant="outlined"
-                                >
-                                    Cancel Session
-                                </Button>
-                            )
-                    )}
-                </div>
-
-                <div style={{ clear: 'both' }} />
-            </div>
-
-            <Paper style={{
-                padding: 20,
-                marginTop: 20,
-            }}
-            >
-
-                {/* Feedback scores chart */}
-                <div style={{
-                    height: 500,
-                    margin: '20px auto',
-                }}
-                >
-                    {session.participants.length
-                        ? (
-                            <ScoresChart participants={[
-                                ...session.participants,
-                                {
-                                    displayName: 'Average',
-                                    scores: session.averageScores,
-                                },
-                            ]}
-                            />
-                        )
-                        : (
-                            <div style={{
-                                height: '100%',
-                                padding: 140,
-                                outline: '1px solid black',
-                                textAlign: 'center',
-                            }}
-                            >
-                                <h3 style={{ fontSize: 20, margin: 0 }}>
-                                    Invite Participants to join:
-                                </h3>
-                                <h2 style={{
-                                    margin: '20px 0 0 0',
-                                    fontSize: 35,
+                    {/* Side area: code + end sesh button */}
+                    {session.endedAt || (
+                        <div style={{ float: 'right' }}>
+                            <div
+                                style={{
+                                    fontWeight: 'bold',
+                                    marginBottom: 10,
+                                    cursor: 'pointer',
+                                    lineHeight: '30px', // to line up better w/h2
                                 }}
-                                >live-poll.herokuapp.com
-                                </h2>
-
-                                <h3 style={{ margin: '35px 0 0 0' }}>Session Code</h3>
-                                <h3
+                                onKeyDown={copyJoinCode}
+                                onClick={copyJoinCode}
+                                role="button"
+                                tabIndex="0"
+                            >
+                                Session Code:
+                                {' '}
+                                {session.joinCode}
+                                <FileCopyOutlinedIcon
                                     style={{
                                         fontSize: 18,
                                         marginLeft: 6,
-                                        marginTop: 7,
                                         verticalAlign: -3,
-                                        cursor: 'pointer',
                                     }}
-                                >
-                                    <div
-                                        onKeyDown={copyJoinCode}
-                                        onClick={copyJoinCode}
-                                        role="button"
-                                        tabIndex="0"
-                                    >
-                                        {session.joinCode}
-                                        <FileCopyOutlinedIcon
-                                            style={{
-                                                fontSize: 18,
-                                                marginLeft: 5,
-                                                verticalAlign: -2,
-                                            }}
-                                        />
-                                    </div>
-                                </h3>
+                                />
                             </div>
-                        )}
+
+                            {/* If the session has already ended
+                            don't show end/cancel buttons
+                        */}
+                            {session.participants.length
+                                ? (
+                                    // If participants have already joined,
+                                    // show End Session
+                                    <Button
+                                        style={{
+                                            fontSize: 14,
+                                            padding: '2px 10px',
+                                            float: 'right',
+                                        }}
+                                        color="secondary"
+                                        variant="outlined"
+                                        onClick={() => setConfirmationDialog({
+                                            title: 'End Session',
+                                            prompt: `
+                                                    Are you sure you want to end this session?
+                                                    All participants will be removed, and unable to rejoin.
+                                                `,
+                                            confirmText: 'End Session',
+                                            onConfirm: () => dispatch({
+                                                type: 'END_SESSION',
+                                                payload: session.id,
+                                            }),
+                                        })}
+                                    >
+                                        End Session
+                                    </Button>
+                                )
+                                : (
+                            // If no participants have joined yet,
+                            // we can "cancel" (delete) the session
+                                    <Button
+                                        onClick={deleteSession}
+                                        style={{
+                                            fontSize: 14,
+                                            padding: '2px 10px',
+                                            float: 'right',
+                                        }}
+                                        color="secondary"
+                                        variant="outlined"
+                                    >
+                                        Cancel Session
+                                    </Button>
+                                )}
+                        </div>
+                    )}
+
+                    <div style={{ clear: 'both' }} />
                 </div>
 
-                {/* Participants */}
-                <h2 style={{ paddingTop: 20 }}>
-                    Participants
+                <Paper style={{
+                    padding: 20,
+                    marginTop: 20,
+                }}
+                >
+
+                    {/* Feedback scores chart */}
                     <div style={{
-                        display: 'inline-block',
-                        fontSize: 14,
-                        marginLeft: 30,
-                        color: 'var(--almost-black)',
-                        verticalAlign: 2,
+                        height: 500,
+                        margin: '20px auto',
                     }}
                     >
-                        {participants.length}
-                        <PersonIcon style={{
-                            verticalAlign: -5,
-                            fontSize: 22,
-                            marginLeft: 3,
-                        }}
-                        />
+                        {session.participants.length
+                            ? (
+                                <ScoresChart participants={[
+                                    ...session.participants,
+                                    {
+                                        displayName: 'Average',
+                                        scores: session.averageScores,
+                                    },
+                                ]}
+                                />
+                            )
+                            : (
+                                <div style={{
+                                    height: '100%',
+                                    padding: 140,
+                                    outline: '1px solid black',
+                                    textAlign: 'center',
+                                }}
+                                >
+                                    <h3 style={{ fontSize: 20, margin: 0 }}>
+                                        Invite Participants to join:
+                                    </h3>
+                                    <h2 style={{
+                                        margin: '20px 0 0 0',
+                                        fontSize: 35,
+                                    }}
+                                    >live-poll.herokuapp.com
+                                    </h2>
+
+                                    <h3 style={{ margin: '35px 0 0 0' }}>Session Code</h3>
+                                    <h3
+                                        style={{
+                                            fontSize: 18,
+                                            marginLeft: 6,
+                                            marginTop: 7,
+                                            verticalAlign: -3,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        <div
+                                            onKeyDown={copyJoinCode}
+                                            onClick={copyJoinCode}
+                                            role="button"
+                                            tabIndex="0"
+                                        >
+                                            {session.joinCode}
+                                            <FileCopyOutlinedIcon
+                                                style={{
+                                                    fontSize: 18,
+                                                    marginLeft: 5,
+                                                    verticalAlign: -2,
+                                                }}
+                                            />
+                                        </div>
+                                    </h3>
+                                </div>
+                            )}
                     </div>
-                    {averageScores && averageScores.length
+
+                    {/* Participants */}
+                    <h2 style={{ paddingTop: 20 }}>
+                        Participants
+                        <div style={{
+                            display: 'inline-block',
+                            fontSize: 14,
+                            marginLeft: 30,
+                            color: 'var(--almost-black)',
+                            verticalAlign: 2,
+                        }}
+                        >
+                            {participants.length}
+                            <PersonIcon style={{
+                                verticalAlign: -5,
+                                fontSize: 22,
+                                marginLeft: 3,
+                            }}
+                            />
+                        </div>
+                        {averageScores && averageScores.length
                             && (
                                 <div style={{
                                     fontSize: 13,
@@ -435,31 +480,55 @@ function SessionDetails() {
                                     </div>
                                 </div>
                             )}
-                </h2>
+                    </h2>
 
-                {/* Participant List */}
-                {session.participants.length
-                    ? (
+                    {/* Participant List */}
+                    {session.participants.length
+                        ? (
 
-                        <TableContainer>
-                            <Table>
-                                <TableBody>
-                                    {session.participants.map((participant) => (
-                                        <ParticipantRow
-                                            key={participant.id}
-                                            participant={participant}
-                                        />
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    )
-                    : (
-                        <h3>No participants have joined yet</h3>
-                    )}
+                            <TableContainer>
+                                <Table>
+                                    <TableBody>
+                                        {session.participants.map((participant) => (
+                                            <ParticipantRow
+                                                key={participant.id}
+                                                participant={participant}
+                                                sessionEndedAt={session.endedAt}
+                                                onKickUser={(usr) => setConfirmationDialog({
+                                                    title: 'Kick user',
+                                                    prompt: `
+                                                        Are you sure you want to remove participant 
+                                                        "${usr.displayName}" from this session? 
+                                                        Their scores will remain visible to you, but
+                                                        they will be unable to share additional scores.
+                                                    `,
+                                                    confirmText: 'Kick User',
+                                                    onConfirm: () => dispatch({
+                                                        type: 'KICK_PARTICIPANT',
+                                                        payload: usr,
+                                                    }),
+                                                })}
+                                            />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )
+                        : (
+                            <h3>No participants have joined yet</h3>
+                        )}
 
-            </Paper>
-        </Container>
+                </Paper>
+            </Container>
+            <ConfirmationDialog
+                open={!!confirmationDialog}
+                title={confirmationDialog?.title}
+                prompt={confirmationDialog?.prompt}
+                confirmText={confirmationDialog?.confirmText}
+                onConfirm={confirmationDialog?.onConfirm}
+                onClose={() => setConfirmationDialog(null)}
+            />
+        </>
     );
 }
 
