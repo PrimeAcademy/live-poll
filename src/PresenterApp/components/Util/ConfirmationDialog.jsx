@@ -15,8 +15,8 @@ function ConfirmationDialog({
     onClose = () => {},
 }) {
     const ConfirmButton = confirmLinkTo
-        ? (...props) => <ButtonLink to={confirmLinkTo} {...props} />
-        : (...props) => <Button {...props} />;
+        ? (props) => <ButtonLink to={confirmLinkTo} {...props} />
+        : (props) => <Button {...props} />;
     return (
         <Dialog
             open={open}
@@ -38,7 +38,10 @@ function ConfirmationDialog({
                     <ConfirmButton
                         color="secondary"
                         variant="contained"
-                        onClick={onConfirm}
+                        onClick={() => {
+                            onConfirm();
+                            onClose();
+                        }}
                     >
                         {confirmText}
                     </ConfirmButton>
