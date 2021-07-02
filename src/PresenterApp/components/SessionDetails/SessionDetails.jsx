@@ -263,39 +263,39 @@ function SessionDetails() {
                     </div>
 
                     {/* Side area: code + end sesh button */}
-                    <div style={{ float: 'right' }}>
-                        <div
-                            style={{
-                                fontWeight: 'bold',
-                                marginBottom: 10,
-                                cursor: 'pointer',
-                                lineHeight: '30px', // to line up better w/h2
-                            }}
-                            onKeyDown={copyJoinCode}
-                            onClick={copyJoinCode}
-                            role="button"
-                            tabIndex="0"
-                        >
-                            Session Code:
-                            {' '}
-                            {session.joinCode}
-                            <FileCopyOutlinedIcon
+                    {session.endedAt || (
+                        <div style={{ float: 'right' }}>
+                            <div
                                 style={{
-                                    fontSize: 18,
-                                    marginLeft: 6,
-                                    verticalAlign: -3,
+                                    fontWeight: 'bold',
+                                    marginBottom: 10,
+                                    cursor: 'pointer',
+                                    lineHeight: '30px', // to line up better w/h2
                                 }}
-                            />
-                        </div>
+                                onKeyDown={copyJoinCode}
+                                onClick={copyJoinCode}
+                                role="button"
+                                tabIndex="0"
+                            >
+                                Session Code:
+                                {' '}
+                                {session.joinCode}
+                                <FileCopyOutlinedIcon
+                                    style={{
+                                        fontSize: 18,
+                                        marginLeft: 6,
+                                        verticalAlign: -3,
+                                    }}
+                                />
+                            </div>
 
-                        {/* If the session has already ended
-                        don't show end/cancel buttons
-                     */}
-                        {!!session.endedAt || (
-                            session.participants.length
+                            {/* If the session has already ended
+                            don't show end/cancel buttons
+                        */}
+                            {session.participants.length
                                 ? (
-                                // If participants have already joined,
-                                // show End Session
+                                    // If participants have already joined,
+                                    // show End Session
                                     <Button
                                         style={{
                                             fontSize: 14,
@@ -307,9 +307,9 @@ function SessionDetails() {
                                         onClick={() => setConfirmationDialog({
                                             title: 'End Session',
                                             prompt: `
-                                                Are you sure you want to end this session?
-                                                All participants will be removed, and unable to rejoin.
-                                            `,
+                                                    Are you sure you want to end this session?
+                                                    All participants will be removed, and unable to rejoin.
+                                                `,
                                             confirmText: 'End Session',
                                             onConfirm: () => dispatch({
                                                 type: 'END_SESSION',
@@ -321,8 +321,8 @@ function SessionDetails() {
                                     </Button>
                                 )
                                 : (
-                                    // If no participants have joined yet,
-                                    // we can "cancel" (delete) the session
+                            // If no participants have joined yet,
+                            // we can "cancel" (delete) the session
                                     <Button
                                         onClick={deleteSession}
                                         style={{
@@ -335,9 +335,9 @@ function SessionDetails() {
                                     >
                                         Cancel Session
                                     </Button>
-                                )
-                        )}
-                    </div>
+                                )}
+                        </div>
+                    )}
 
                     <div style={{ clear: 'both' }} />
                 </div>

@@ -9,7 +9,8 @@ passport.use('participant', new CustomStrategy(
             // Find a session matching the joinCode
             const { rows: sessionRows } = await pool.query(`
                 SELECT * FROM "session"
-                WHERE "joinCode" = $1;
+                WHERE "joinCode" = $1
+                AND session."endedAt" IS NULL;
             `, [
                 req.body.joinCode.toUpperCase(),
             ]);

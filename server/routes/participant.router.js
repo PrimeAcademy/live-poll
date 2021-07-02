@@ -1,11 +1,11 @@
 const { Router } = require('express');
 const passport = require('passport');
-const { rejectUnauthenticated } = require('../modules/authentication-middleware');
+const { authParticipant } = require('../modules/authentication-middleware');
 
 const router = Router();
 
 // Handles Ajax request for user information if user is authenticated
-router.get('/', rejectUnauthenticated, (req, res) => {
+router.get('/', authParticipant, (req, res) => {
     // Send back user object from the session (previously queried from the database)
     res.send(req.user);
 });
