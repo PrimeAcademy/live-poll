@@ -470,6 +470,20 @@ function SessionDetails() {
                                                 key={participant.id}
                                                 participant={participant}
                                                 sessionEndedAt={session.endedAt}
+                                                onKickUser={(usr) => setConfirmationDialog({
+                                                    title: 'Kick user',
+                                                    prompt: `
+                                                        Are you sure you want to remove participant 
+                                                        "${usr.displayName}" from this session? 
+                                                        Their scores will remain visible to you, but
+                                                        they will be unable to share additional scores.
+                                                    `,
+                                                    confirmText: 'Kick User',
+                                                    onConfirm: () => dispatch({
+                                                        type: 'KICK_PARTICIPANT',
+                                                        payload: usr,
+                                                    }),
+                                                })}
                                             />
                                         ))}
                                     </TableBody>
