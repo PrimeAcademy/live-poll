@@ -98,7 +98,31 @@ function SessionDetails() {
                         scores: [],
                     },
                 });
+
+                // Display a toast
+                dispatch({
+                    type: 'SET_TOAST',
+                    payload: `${participant.displayName} has joined this session`,
+                });
             }
+        });
+
+        socket.on('participantExited', (participant) => {
+            if (participant.sessionId !== session.id) {
+                console.warn('participantExited doesn\'t match current session',
+                    { participant, session });
+                return;
+            }
+            dispatch({
+                type: 'PARTICIPANT_EXITED',
+                payload: participant.id,
+            });
+
+            // Display a toast
+            dispatch({
+                type: 'SET_TOAST',
+                payload: `${participant.displayName} has left this session`,
+            });
         });
 
         return () => socket.disconnect();
