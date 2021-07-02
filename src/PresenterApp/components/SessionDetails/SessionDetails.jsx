@@ -62,8 +62,16 @@ function SessionDetails() {
     const location = useLocation();
     const isEditMode = location.pathname.endsWith('/edit');
 
+    const isActiveSession = session.endedAt === null;
+
     // Setup socket.io connection
     useEffect(() => {
+        // No need for socket.io connection
+        // if the session is ended
+        if (!isActiveSession) {
+            return;
+        }
+
         // eslint-disable-next-line no-shadow
         const socket = io();
 
@@ -94,7 +102,7 @@ function SessionDetails() {
         });
 
         return () => socket.disconnect();
-    }, [session.id]);
+    }, [session.id, isActiveSession]);
 
     // Select name text in input, on switch to edit mode
     const nameInputRef = createRef();
@@ -461,6 +469,7 @@ function SessionDetails() {
                                             <ParticipantRow
                                                 key={participant.id}
                                                 participant={participant}
+                                                sessionEndedAt={session.endedAt}
                                             />
                                         ))}
                                     </TableBody>

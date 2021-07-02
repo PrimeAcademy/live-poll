@@ -39,9 +39,22 @@ function* kickedUser() {
     }
 }
 
+function* sessionEnded() {
+    try {
+        yield put({ type: 'LOGOUT' });
+        yield put({
+            type: 'SET_GLOBAL_ERROR',
+            payload: new Error('The session has ended.'),
+        });
+    } catch (err) {
+        console.error('session ended failed', err);
+    }
+}
+
 function* userSaga() {
     yield takeLatest('FETCH_USER', fetchUser);
     yield takeLatest('KICKED_USER', kickedUser);
+    yield takeLatest('SESSION_ENDED', sessionEnded);
 }
 
 export default userSaga;
