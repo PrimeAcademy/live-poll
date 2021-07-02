@@ -1,5 +1,3 @@
-import { AssignmentReturn } from '@material-ui/icons';
-
 /* eslint-disable no-shadow */
 export const sessionList = (state = [], action) => {
     switch (action.type) {

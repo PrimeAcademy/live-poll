@@ -10,10 +10,8 @@ import {
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
-import { session } from 'passport';
 import ButtonLink from '../Util/ButtonLink';
 import MiniScoresChart from '../ScoresChart/MiniScoresChart';
-import Logo from '../Logo/Logo';
 import logoGreen from '../../images/swipe-green.png';
 
 const useStyles = makeStyles({
