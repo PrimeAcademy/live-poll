@@ -287,7 +287,7 @@ function SessionDetails() {
                     </div>
 
                     {/* Side area: code + end sesh button */}
-                    {session.endedAt || (
+                    {!!session.endedAt || (
                         <div style={{ float: 'right' }}>
                             <div
                                 style={{
