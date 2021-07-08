@@ -11,8 +11,8 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import ButtonLink from '../Util/ButtonLink';
-import MiniScoresChart from '../ScoresChart/MiniScoresChart';
 import logoGreen from '../../images/swipe-green.png';
+import ScoresChart from '../../../ScoreChart/ScoreChart';
 
 const useStyles = makeStyles({
     // Allow link to stretch the entire width/height of the containing column
@@ -47,6 +47,12 @@ function SessionList() {
         });
     }, []);
 
+    const getAverageScore = (sesh) => {
+        const sum = sesh.averageScores
+            .reduce((sum, score) => sum + score.value, 0);
+        return sum / sesh.averageScores.length;
+    };
+
     return (
         <Container style={{ maxWidth: 980 }}>
             <div>
@@ -71,11 +77,21 @@ function SessionList() {
                                 <TableCell style={{ maxWidth: 40, paddingLeft: 0 }}>
 
                                     <div style={{
-                                        width: 50,
-                                        height: 35,
+                                        width: 60,
+                                        height: 60,
+                                        marginLeft: -6,
                                     }}
                                     >
-                                        <MiniScoresChart />
+                                        <ScoresChart
+                                            isMini
+                                            participants={[
+                                                {
+                                                    displayName: 'Average',
+                                                    scores: sesh.averageScores,
+                                                },
+                                                ...sesh.participants,
+                                            ]}
+                                        />
                                     </div>
                                 </TableCell>
 
@@ -83,17 +99,27 @@ function SessionList() {
                                 <TableCell style={{
                                     fontSize: 22,
                                     color: 'rgba(0, 0, 0, 0.65)',
-                                    paddingLeft: 15,
+                                    paddingLeft: 20,
+                                    ...(sesh.averageScores.length || {
+                                        textAlign: 'center',
+                                    }),
                                 }}
                                 >
-                                    {(Math.random() * 5).toFixed(1)}
-                                    <span
-                                        style={{
-                                            fontSize: 12,
-                                        }}
-                                    >
-                                        &nbsp;avg
-                                    </span>
+                                    {sesh.averageScores.length
+                                        ? (
+                                            <>
+                                                {(getAverageScore(sesh)).toFixed(1)}
+                                                <span
+                                                    style={{
+                                                        fontSize: 12,
+                                                    }}
+                                                >
+                                                    &nbsp;avg
+                                                </span>
+                                            </>
+                                        )
+                                        : '--'}
+
                                 </TableCell>
 
                                 {/* Name */}

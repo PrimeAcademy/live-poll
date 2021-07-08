@@ -9,7 +9,7 @@ function ScoreChart({
     const [uniqueId, setUniqueId] = useState(null);
     const getSeries = () => participants.map((part) => ({
         name: part.displayName,
-        data: part.scores.map((s) => [s.createdAt.getTime(), s.value]),
+        data: part.scores.map((s) => [new Date(s.createdAt).getTime(), s.value]),
     }));
 
     useEffect(() => {
@@ -59,7 +59,7 @@ function ScoreChart({
                 },
                 stroke: {
                     curve: 'smooth',
-                    width: isMini ? 1 : 6,
+                    width: isMini ? 2 : 6,
                 },
                 // dataLabels: { enabled: false },
                 xaxis: {
