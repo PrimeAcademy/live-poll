@@ -2,7 +2,16 @@
 export const sessionList = (state = [], action) => {
     switch (action.type) {
     case 'PUT_SESSION_LIST':
-        return action.payload;
+        return action.payload
+            .map((sesh) => ({
+                ...sesh,
+                // List of average scores over time
+                averageScores: allAverageScores(sesh.participants),
+                participants: sesh.participants.map((p) => ({
+                    ...p,
+                    averageScore: averageScore(p.scores),
+                })),
+            }));
     case 'REMOVE_SESSION':
         return state.filter((s) => s.id !== action.payload);
     }
@@ -69,7 +78,6 @@ export const sessionDetails = (state = { presenter: {}, participants: [] }, acti
         return {
             ...state,
             averageScores: allAverageScores(participants),
-            // Loop through participants.
             participants,
         };
     case 'END_SESSION':

@@ -12,7 +12,15 @@ router.get('/', authPresenter, async (req, res) => {
         FROM session
         JOIN "user"
             ON "user".id = "session"."presenterId"
-        LEFT JOIN "participant"
+        LEFT JOIN (
+            -- grab all scores for each participant
+            SELECT 
+                participant.*,
+                array_agg(to_json(score) ORDER BY "createdAt" ASC) as "scores"
+            FROM "participant"
+            LEFT JOIN "score" ON "score"."participantId" = participant.id
+            GROUP BY "participant".id
+        ) as "participant"
             ON "participant"."sessionId" = "session".id
         WHERE "session"."presenterId" = $1
         GROUP BY "session"."id", "user".id
@@ -22,7 +30,18 @@ router.get('/', authPresenter, async (req, res) => {
 
     const { rows } = await pool.query(sql, [req.user.id]);
 
-    res.send(rows);
+    // postgress returns [null] if there are no particpants
+    const sessions = rows.map((s) => ({
+        ...s,
+        participants: s.participants
+            .filter(Boolean)
+            .map((p) => ({
+                ...p,
+                scores: p.scores.filter(Boolean),
+            })),
+    }));
+
+    res.send(sessions);
 });
 
 router.get('/:id', authPresenter, async (req, res) => {

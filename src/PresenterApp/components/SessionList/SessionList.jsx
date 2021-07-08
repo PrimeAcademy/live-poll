@@ -47,6 +47,12 @@ function SessionList() {
         });
     }, []);
 
+    const getAverageScore = (sesh) => {
+        const sum = sesh.averageScores
+            .reduce((sum, score) => sum + score.value, 0);
+        return sum / sesh.averageScores.length;
+    };
+
     return (
         <Container style={{ maxWidth: 980 }}>
             <div>
@@ -83,17 +89,27 @@ function SessionList() {
                                 <TableCell style={{
                                     fontSize: 22,
                                     color: 'rgba(0, 0, 0, 0.65)',
-                                    paddingLeft: 15,
+                                    paddingLeft: 20,
+                                    ...(sesh.averageScores.length || {
+                                        textAlign: 'center',
+                                    }),
                                 }}
                                 >
-                                    {(Math.random() * 5).toFixed(1)}
-                                    <span
-                                        style={{
-                                            fontSize: 12,
-                                        }}
-                                    >
-                                        &nbsp;avg
-                                    </span>
+                                    {sesh.averageScores.length
+                                        ? (
+                                            <>
+                                                {(getAverageScore(sesh)).toFixed(1)}
+                                                <span
+                                                    style={{
+                                                        fontSize: 12,
+                                                    }}
+                                                >
+                                                    &nbsp;avg
+                                                </span>
+                                            </>
+                                        )
+                                        : '--'}
+
                                 </TableCell>
 
                                 {/* Name */}
