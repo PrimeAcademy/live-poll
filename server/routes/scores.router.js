@@ -1,10 +1,10 @@
 const express = require('express');
-const { rejectUnauthenticated } = require('../modules/authentication-middleware');
+const { authPresenter } = require('../modules/authentication-middleware');
 const pool = require('../modules/pool');
 
 const router = express.Router();
 
-router.get('/:sessionId', rejectUnauthenticated, async (req, res) => {
+router.get('/:sessionId', authPresenter, async (req, res) => {
     // TODO, only presenters allowed to see other sessions
 
     const { rows: scores } = await pool.query(`

@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const pool = require('../modules/pool');
-const { rejectUnauthenticated } = require('../modules/authentication-middleware');
+const { authPresenter } = require('../modules/authentication-middleware');
 const { io } = require('../io');
 
-router.get('/', rejectUnauthenticated, async (req, res) => {
+router.get('/', authPresenter, async (req, res) => {
     const sql = `
         SELECT 
             session.*, 
@@ -25,7 +25,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
     res.send(rows);
 });
 
-router.get('/:id', rejectUnauthenticated, async (req, res) => {
+router.get('/:id', authPresenter, async (req, res) => {
     const sql = `
         SELECT 
             session.*,
@@ -73,7 +73,7 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     res.send(rows[0]);
 });
 
-router.post('/', rejectUnauthenticated, async (req, res) => {
+router.post('/', authPresenter, async (req, res) => {
     const sql = `
       INSERT INTO session
         ("presenterId", "name", "joinCode", "createdAt")
@@ -99,7 +99,7 @@ router.post('/', rejectUnauthenticated, async (req, res) => {
     res.status(201).send(rows[0]);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authPresenter, async (req, res) => {
     if (!('name' in req.body)) {
         res.status(400).send({
             message: 'Missing required "name" attribute in request body',
@@ -111,11 +111,13 @@ router.put('/:id', async (req, res) => {
         UPDATE "session"
         SET "name" = $1
         WHERE id = $2
+        AND "presenterId" = $3
         RETURNING *
     `;
     const { rows } = await pool.query(sql, [
         req.body.name,
         req.params.id,
+        req.user.id,
     ]);
 
     if (rows.length !== 1) {
@@ -129,20 +131,22 @@ router.put('/:id', async (req, res) => {
 });
 
 // End session
-router.put('/:id/end', async (req, res) => {
+router.put('/:id/end', authPresenter, async (req, res) => {
     const sessionId = req.params.id;
     const { rows: sessions } = await pool.query(`
         UPDATE session
         SET "endedAt" = CURRENT_TIMESTAMP
         WHERE session.id = $1 
+        AND session."presenterId" = $2
         AND session."endedAt" IS NULL
         RETURNING *
-    `, [sessionId]);
+    `, [sessionId, req.user.id]);
 
     if (!sessions.length) {
         res.status(404).send({
             message: `No active session exists with id ${sessionId}`,
         });
+        return;
     }
 
     const session = sessions[0];
@@ -159,15 +163,18 @@ router.put('/:id/end', async (req, res) => {
     for (const p of participants) {
         io.to(`participant/${p.id}`).emit('sessionEnded', session);
     }
+
+    res.send(200);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authPresenter, async (req, res) => {
     const sql = `
         DELETE FROM "session"
         WHERE id=$1
+        AND "presenterId" = $2
         RETURNING *
     `;
-    const { rows } = await pool.query(sql, [req.params.id]);
+    const { rows } = await pool.query(sql, [req.params.id, req.user.id]);
 
     if (rows.length !== 1) {
         res.status(404).send({
@@ -182,7 +189,7 @@ router.delete('/:id', async (req, res) => {
 /*
 Remove ("kick") a participant from the session
 */
-router.delete('/:sessionId/participants/:participantId', async (req, res) => {
+router.delete('/:sessionId/participants/:participantId', authPresenter, async (req, res) => {
     const { participantId, sessionId } = req.params;
     // Make sure the participant is in this session
     const { rows: matchingParticipants } = await pool.query(`
@@ -191,7 +198,8 @@ router.delete('/:sessionId/participants/:participantId', async (req, res) => {
         JOIN session ON session.id = participant."sessionId"
         WHERE participant.id = $1
         AND session.id = $2
-    `, [participantId, sessionId]);
+        AND session."presenterId" = $3
+    `, [participantId, sessionId, req.user.id]);
 
     // Check for 404
     if (!matchingParticipants.length) {
