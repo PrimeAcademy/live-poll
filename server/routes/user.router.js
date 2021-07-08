@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const {
-    rejectUnauthenticated,
+    authPresenter,
 } = require('../modules/authentication-middleware');
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
@@ -9,7 +9,7 @@ const pool = require('../modules/pool');
 const router = express.Router();
 
 // Handles Ajax request for user information if user is authenticated
-router.get('/', rejectUnauthenticated, (req, res) => {
+router.get('/', authPresenter, (req, res) => {
     console.log('get / socket', req.user.socket);
     // Send back user object from the session (previously queried from the database)
     res.send(req.user);

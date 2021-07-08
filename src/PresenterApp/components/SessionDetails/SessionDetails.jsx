@@ -6,6 +6,7 @@ import {
     TableBody,
     TableContainer,
     Button,
+    Tooltip,
 } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -23,6 +24,7 @@ import moment from 'moment';
 import ScoresChart from '../../../ScoreChart/ScoreChart';
 import ParticipantRow from './ParticipantRow';
 import ConfirmationDialog from '../Util/ConfirmationDialog';
+import logoGreen from '../../images/swipe-green.png';
 
 const useStyles = makeStyles({
     sessionName: {
@@ -257,11 +259,34 @@ function SessionDetails() {
                                         color: 'inherit',
                                     }}
                                 >
+                                    {/* Active session indicator */}
+                                    {!session.endedAt
+                                    && (
+                                        <Tooltip title="Session is active">
+                                            <img
+                                                alt="Active session"
+                                                title="Active session"
+                                                src={logoGreen}
+                                                style={{
+                                                    transform: 'rotate(-17deg)',
+                                                    width: 30,
+                                                    marginRight: 15,
+                                                    marginLeft: -5,
+                                                    verticalAlign: 10,
+                                                    cursor: 'initial',
+                                                }}
+                                            />
+                                        </Tooltip>
+                                    )}
+
+                                    {/* Session Name */}
                                     <h2
                                         className={`${classes.sessionName} h2`}
                                     >
                                         {session.name}
                                     </h2>
+
+                                    {/* Edit name icon */}
                                     <EditOutlinedIcon style={{
                                         fontSize: 22,
                                         marginLeft: 20,
@@ -287,7 +312,7 @@ function SessionDetails() {
                     </div>
 
                     {/* Side area: code + end sesh button */}
-                    {session.endedAt || (
+                    {!!session.endedAt || (
                         <div style={{ float: 'right' }}>
                             <div
                                 style={{

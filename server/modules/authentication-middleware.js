@@ -14,6 +14,24 @@ const rejectUnauthenticated = (req, res, next) => {
     }
 };
 
+const authPresenter = async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        res.status(403).send({
+            message: 'User is not logged in',
+        });
+        return;
+    }
+
+    if (req.user.type !== 'presenter') {
+        res.status(403).send({
+            message: `This endpoint is not available to ${req.user.type} users`,
+        });
+        return;
+    }
+
+    next();
+};
+
 const authParticipant = async (req, res, next) => {
     // Check that they're logged in
     if (!req.isAuthenticated()) {
@@ -61,4 +79,5 @@ const authParticipant = async (req, res, next) => {
 module.exports = {
     rejectUnauthenticated,
     authParticipant,
+    authPresenter,
 };
