@@ -10,6 +10,11 @@ export const sessionList = (state = [], action) => {
                 participants: sesh.participants.map((p) => ({
                     ...p,
                     averageScore: averageScore(p.scores),
+                    scores: p.scores.map((s) => ({
+                        ...s,
+                        createdAt: new Date(s.createdAt),
+                        endedAt: s.endedAt && new Date(s.endedAt),
+                    })),
                 })),
             }));
     case 'REMOVE_SESSION':

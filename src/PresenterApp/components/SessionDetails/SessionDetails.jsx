@@ -406,11 +406,11 @@ function SessionDetails() {
                         {session.participants.length
                             ? (
                                 <ScoresChart participants={[
-                                    ...session.participants,
                                     {
                                         displayName: 'Average',
                                         scores: session.averageScores,
                                     },
+                                    ...session.participants,
                                 ]}
                                 />
                             )

@@ -11,8 +11,8 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import PersonIcon from '@material-ui/icons/Person';
 import ButtonLink from '../Util/ButtonLink';
-import MiniScoresChart from '../ScoresChart/MiniScoresChart';
 import logoGreen from '../../images/swipe-green.png';
+import ScoresChart from '../../../ScoreChart/ScoreChart';
 
 const useStyles = makeStyles({
     // Allow link to stretch the entire width/height of the containing column
@@ -77,11 +77,21 @@ function SessionList() {
                                 <TableCell style={{ maxWidth: 40, paddingLeft: 0 }}>
 
                                     <div style={{
-                                        width: 50,
-                                        height: 35,
+                                        width: 60,
+                                        height: 60,
+                                        marginLeft: -6,
                                     }}
                                     >
-                                        <MiniScoresChart />
+                                        <ScoresChart
+                                            isMini
+                                            participants={[
+                                                {
+                                                    displayName: 'Average',
+                                                    scores: sesh.averageScores,
+                                                },
+                                                ...sesh.participants,
+                                            ]}
+                                        />
                                     </div>
                                 </TableCell>
 
