@@ -5,10 +5,13 @@ import {
 } from 'react-router-dom';
 import { Snackbar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
+import Info from '../Info/Info';
 import ActiveSession from '../ActiveSession/ActiveSession';
 import ParticipantLogin from '../ParticipantLogin/ParticipantLogin';
 import Logout from '../Logout/Logout';
 import Nav from '../Nav/Nav';
+
+'';
 
 function App() {
     const dispatch = useDispatch();
@@ -38,6 +41,13 @@ function App() {
                     path="/logout"
                 >
                     <Logout />
+                </Route>
+
+                <Route
+                    path="/info"
+                    exact
+                >
+                    <Info />
                 </Route>
 
                 <Route
