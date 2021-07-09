@@ -22,6 +22,12 @@ const participantRouter = require('./routes/participant.router');
 // Setup socket.io
 require('./io').setup();
 
+/* app.set('json replacer', (key, val) => {
+    console.log({ key, val });
+    return val instanceof Date
+        ? val.getTime();
+}); */
+
 // Body parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

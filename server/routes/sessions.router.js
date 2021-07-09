@@ -31,15 +31,7 @@ router.get('/', authPresenter, async (req, res) => {
     const { rows } = await pool.query(sql, [req.user.id]);
 
     // postgress returns [null] if there are no particpants
-    const sessions = rows.map((s) => ({
-        ...s,
-        participants: s.participants
-            .filter(Boolean)
-            .map((p) => ({
-                ...p,
-                scores: p.scores.filter(Boolean),
-            })),
-    }));
+    const sessions = rows.map(serializeSession);
 
     res.send(sessions);
 });
@@ -79,17 +71,9 @@ router.get('/:id', authPresenter, async (req, res) => {
         return;
     }
 
-    const session = rows[0];
+    const session = serializeSession(rows[0]);
 
-    // postgress returns [null] if there are no particpants
-    session.participants = session.participants
-        .filter(Boolean)
-        .map((p) => ({
-            ...p,
-            scores: p.scores.filter(Boolean),
-        }));
-
-    res.send(rows[0]);
+    res.send(session);
 });
 
 router.post('/', authPresenter, async (req, res) => {
@@ -252,5 +236,26 @@ router.delete('/:sessionId/participants/:participantId', authPresenter, async (r
 
     res.send(204);
 });
+
+function serializeSession(session) {
+    return {
+        ...session,
+        participants: session.participants
+            .filter(Boolean)
+            .map((p) => ({
+                ...p,
+                joinedAt: new Date(p.joinedAt),
+                exitedAt: p.exitedAt && new Date(p.exitedAt),
+                scores: p.scores
+                    .filter(Boolean)
+                    .map((s) => ({
+                        ...s,
+                        // For some reason,
+                        // pg does not cast this
+                        createdAt: new Date(s.createdAt),
+                    })),
+            })),
+    };
+}
 
 module.exports = router;
