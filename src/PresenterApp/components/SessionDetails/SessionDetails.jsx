@@ -265,7 +265,6 @@ function SessionDetails() {
                                         <Tooltip title="Session is active">
                                             <img
                                                 alt="Active session"
-                                                title="Active session"
                                                 src={logoGreen}
                                                 style={{
                                                     transform: 'rotate(-17deg)',
