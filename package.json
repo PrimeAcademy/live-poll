@@ -46,6 +46,8 @@
     "presenter": "PORT=3001 HOST=presenter.livepoll.local react-scripts start",
     "participant": "PORT=3002 HOST=participant.livepoll.local react-scripts start",
     "server": "nodemon --watch server server/server.js",
+    "db:reset": "./reset-db.sh",
+    "db:push": "heroku pg:reset DATABASE --confirm prime-live-poll && heroku pg:push live_poll DATABASE_URL",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
