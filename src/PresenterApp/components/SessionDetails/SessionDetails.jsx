@@ -192,6 +192,8 @@ function SessionDetails() {
         history.push('/sessions');
     };
 
+    const participantUrl = new URL(process.env.REACT_APP_PARTICIPANT_URL);
+
     return (
         <>
             <Container style={{ maxWidth: 980 }}>
@@ -428,7 +430,17 @@ function SessionDetails() {
                                         margin: '20px 0 0 0',
                                         fontSize: 35,
                                     }}
-                                    >live-poll.herokuapp.com
+                                    >
+                                        <a
+                                            href={participantUrl.href}
+                                            style={{
+                                                textDecoration: 'none',
+                                            }}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {participantUrl.hostname}
+                                        </a>
                                     </h2>
 
                                     <h3 style={{ margin: '35px 0 0 0' }}>Session Code</h3>
