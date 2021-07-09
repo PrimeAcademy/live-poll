@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+    TextField,
+    Button,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import { Link } from 'react-router-dom';
 
 function LoginForm() {
     const [username, setUsername] = useState('');
@@ -24,41 +30,68 @@ function LoginForm() {
     }; // end login
 
     return (
-        <form className="formPanel" onSubmit={login}>
-            <h2>Login</h2>
-            {errors.loginMessage && (
-                <h3 className="alert" role="alert">
-                    {errors.loginMessage}
-                </h3>
-            )}
-            <div>
-                <label htmlFor="username">
-                    Username:
-                    <input
-                        type="text"
-                        name="username"
-                        required
+        <>
+            <form onSubmit={login}>
+                <h2>Login</h2>
+                {errors.loginMessage && (
+                    <Alert
+                        severity="error"
+                        style={{
+                            marginBottom: 20,
+                        }}
+                    >
+                        {errors.loginMessage}
+                    </Alert>
+                )}
+
+                <div>
+                    <TextField
+                        label="username"
                         value={username}
-                        onChange={(event) => setUsername(event.target.value)}
+                        onChange={(e) => setUsername(e.target.value)}
+                        variant="outlined"
+                        style={{
+                            marginBottom: 15,
+                            width: 300,
+                        }}
                     />
-                </label>
-            </div>
-            <div>
-                <label htmlFor="password">
-                    Password:
-                    <input
+                </div>
+
+                <div>
+                    <TextField
+                        label="password"
                         type="password"
-                        name="password"
-                        required
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(e) => setPassword(e.target.value)}
+                        variant="outlined"
+                        style={{
+                            marginBottom: 15,
+                            width: 300,
+                        }}
                     />
-                </label>
+                </div>
+
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                >
+                    Login
+                </Button>
+            </form>
+
+            <div style={{ marginTop: 20 }}>
+                Or,&nbsp;
+                <Link
+                    to="/registration"
+                    style={{
+                        textDecoration: 'none',
+                    }}
+                >
+                    Register for an account
+                </Link>
             </div>
-            <div>
-                <input className="btn" type="submit" name="submit" value="Log In" />
-            </div>
-        </form>
+        </>
     );
 }
 
