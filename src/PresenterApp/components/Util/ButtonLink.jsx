@@ -7,10 +7,26 @@ function ButtonLink({
     color = 'primary',
     variant = 'contained',
     children,
+    external = false,
     ...props
 }) {
+    const LinkComponent = external
+        ? (props) => (
+            <a
+                href={to}
+                target="_blank"
+                {...props}
+            />
+        )
+        : (props) => (
+            <Link
+                to={to}
+                {...props}
+            />
+        );
+
     return (
-        <Link to={to} style={{ textDecoration: 'none' }}>
+        <LinkComponent style={{ textDecoration: 'none' }}>
             <Button
                 variant={variant}
                 color={color}
@@ -19,7 +35,7 @@ function ButtonLink({
             >
                 {children}
             </Button>
-        </Link>
+        </LinkComponent>
     );
 }
 

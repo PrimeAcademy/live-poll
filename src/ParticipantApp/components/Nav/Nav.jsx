@@ -75,7 +75,9 @@ function Nav() {
                     },
                 }}
             >
-                {menuLinks.map(({ label, to, onClick }, i) => (
+                {menuLinks.map(({
+                    label, to, onClick, external,
+                }, i) => (
                     <ButtonLink
                         key={[label, to].join('/')}
                         variant="contained"
@@ -91,6 +93,7 @@ function Nav() {
                                 onClick();
                             }
                         }}
+                        external={external === true}
                     >
                         {label}
                     </ButtonLink>

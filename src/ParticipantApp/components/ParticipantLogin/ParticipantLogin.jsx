@@ -34,7 +34,8 @@ function ParticipantLogin() {
                 {
                     label: 'Create Session',
                     // TODO: link to presenters website
-                    to: '/sessions/new',
+                    to: process.env.REACT_APP_PRESENTER_URL,
+                    external: true,
                 },
             ],
         });
