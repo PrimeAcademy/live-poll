@@ -105,6 +105,7 @@ function ParticipantLogin() {
                         style: {
                             padding: '8px 12px',
                         },
+                        type: 'tel',
                     }}
                 />
                 <Button
